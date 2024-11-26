@@ -1,46 +1,99 @@
 # AM1-TP/optimization/without_hosts/optimization.py
 
-from docplex.mp.model import Model
-import matplotlib.pyplot as plt
+import time
 import numpy as np
+import matplotlib.pyplot as plt
+from docplex.mp.model import Model
 
-def create_utilization_plot(utilization_data, clusters, title, output_file):
+
+
+def measure_time(func):
+    def wrapper(*args, **kwargs):
+        start_time = time.time()
+        result = func(*args, **kwargs)
+        end_time = time.time()
+        execution_time = end_time - start_time
+        print(f"Function '{func.__name__}' executed in {execution_time:.4f} seconds")
+        return result
+    return wrapper
+
+def create_combined_utilization_plot(initial_utilization, final_utilization, allocated_utilization, clusters, output_file):
     resources = ['cpu', 'mem', 'disk']
     x = np.arange(len(resources))
-    width = 0.35
+    width = 0.2
 
-    fig, ax = plt.subplots(figsize=(10, 6))
+    # Create figure with GridSpec
+    fig = plt.figure(figsize=(20, 12))
 
-    # Plot bars for each cluster
+    # Create a 2x2 grid, then merge the bottom row
+    gs = plt.GridSpec(2, 2, height_ratios=[1, 1.5])
+    ax1 = fig.add_subplot(gs[0, 0])  # Top left
+    ax2 = fig.add_subplot(gs[0, 1])  # Top right
+    ax3 = fig.add_subplot(gs[1, :])  # Bottom (spans both columns)
+
+    # Remove the unused subplot if it exists
+    if len(fig.axes) > 3:
+        fig.delaxes(fig.axes[3])
+
+    # Plot initial utilization
     for i, cluster in enumerate(clusters):
-        values = [utilization_data[cluster][r] * 100 for r in resources]
-        ax.bar(x + i*width, values, width, label=f'Cluster {cluster}')
+        values = [initial_utilization[cluster][r] * 100 for r in resources]
+        ax1.bar(x + i*width, values, width, label=f'Cluster {cluster}')
 
-    # Customize plot
-    ax.set_ylabel('Utilization (%)')
-    ax.set_title(title)
-    ax.set_xticks(x + width/2)
-    ax.set_xticklabels(['CPU', 'Memory', 'Disk'])
-    ax.legend()
+    ax1.set_ylabel('Utilization (%)')
+    ax1.set_title('Initial Cluster Utilization')
+    ax1.set_xticks(x + width)
+    ax1.set_xticklabels(['CPU', 'Memory', 'Disk'])
+    ax1.legend()
+    ax1.set_ylim(0, 100)
+    ax1.grid(True, linestyle='--', alpha=0.7)
 
-    # Add value labels on top of bars
     for i, cluster in enumerate(clusters):
-        values = [utilization_data[cluster][r] * 100 for r in resources]
+        values = [initial_utilization[cluster][r] * 100 for r in resources]
         for j, v in enumerate(values):
-            ax.text(j + i*width, v + 1, f'{v:.1f}%',
-                   ha='center', va='bottom')
+            ax1.text(j + i*width, v + 1, f'{v:.1f}%', ha='center', va='bottom')
 
-    # Set y-axis limit to 100%
-    ax.set_ylim(0, 100)
+    # Plot final utilization
+    for i, cluster in enumerate(clusters):
+        values = [final_utilization[cluster][r] * 100 for r in resources]
+        ax2.bar(x + i*width, values, width, label=f'Cluster {cluster}')
 
-    # Add grid
-    ax.grid(True, linestyle='--', alpha=0.7)
+    ax2.set_ylabel('Utilization (%)')
+    ax2.set_title('Final Cluster Utilization')
+    ax2.set_xticks(x + width)
+    ax2.set_xticklabels(['CPU', 'Memory', 'Disk'])
+    ax2.legend()
+    ax2.set_ylim(0, 100)
+    ax2.grid(True, linestyle='--', alpha=0.7)
 
-    # Save plot
+    for i, cluster in enumerate(clusters):
+        values = [final_utilization[cluster][r] * 100 for r in resources]
+        for j, v in enumerate(values):
+            ax2.text(j + i*width, v + 1, f'{v:.1f}%', ha='center', va='bottom')
+
+    # Plot utilization after VM resources allocated
+    for i, cluster in enumerate(clusters):
+        values = [allocated_utilization[cluster][r] * 100 for r in resources]
+        ax3.bar(x + i*width, values, width, label=f'Cluster {cluster}')
+
+    ax3.set_ylabel('Utilization (%)')
+    ax3.set_title('Utilization After VM Allocation')
+    ax3.set_xticks(x + width)
+    ax3.set_xticklabels(['CPU', 'Memory', 'Disk'])
+    ax3.legend()
+    ax3.set_ylim(0, 100)
+    ax3.grid(True, linestyle='--', alpha=0.7)
+
+    for i, cluster in enumerate(clusters):
+        values = [allocated_utilization[cluster][r] * 100 for r in resources]
+        for j, v in enumerate(values):
+            ax3.text(j + i*width, v + 1, f'{v:.1f}%', ha='center', va='bottom')
+
     plt.tight_layout()
     plt.savefig(output_file, dpi=300, bbox_inches='tight')
     plt.close()
 
+@measure_time
 def optimize_vm_placement(clusters, existing_placements, new_vms, current_usage, cluster_capacity, vm_demand):
     # Create model
     mdl = Model('vm_cluster_placement')
@@ -148,6 +201,7 @@ def optimize_vm_placement(clusters, existing_placements, new_vms, current_usage,
 
     return placement_plan, cluster_utilization, final_utilization, final_placement
 
+@measure_time
 def main():
     clusters = ['c1', 'c2']
     existing_placements = {
@@ -191,20 +245,20 @@ def main():
 
     placement_plan, cluster_utilization, final_utilization, final_placement = result
 
-    # Create initial state plot
-    create_utilization_plot(
-        current_usage,
-        clusters,
-        'Initial Cluster Utilization',
-        'initial_utilization.png'
-    )
+    # Calculate utilization after VM resources allocated
+    allocated_utilization = {c: current_usage[c].copy() for c in clusters}
+    for cluster in clusters:
+        for vm, demands in vm_demand.items():
+            for r in ['cpu', 'mem', 'disk']:
+                allocated_utilization[cluster][r] += vm_demand[vm][r] / cluster_capacity[cluster][r]
 
-    # Create final state plot
-    create_utilization_plot(
+    # Create combined plot
+    create_combined_utilization_plot(
+        current_usage,
         cluster_utilization,
+        allocated_utilization,
         clusters,
-        'Final Cluster Utilization',
-        'final_utilization.png'
+        'combined_utilization.png'
     )
 
     print("\nNew VM Placement Plan:")
