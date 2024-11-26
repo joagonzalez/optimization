@@ -17,23 +17,17 @@ def measure_time(func):
         return result
     return wrapper
 
-def create_combined_utilization_plot(initial_utilization, final_utilization, allocated_utilization, clusters, output_file):
+def create_combined_utilization_plot(initial_utilization, final_utilization, allocated_utilization, clusters, output_file, vm_placement=None, vm_demand=None):
     resources = ['cpu', 'mem', 'disk']
     x = np.arange(len(resources))
     width = 0.2
 
     # Create figure with GridSpec
     fig = plt.figure(figsize=(20, 12))
-
-    # Create a 2x2 grid, then merge the bottom row
-    gs = plt.GridSpec(2, 2, height_ratios=[1, 1.5])
+    gs = plt.GridSpec(2, 2, height_ratios=[1.5, 1])
     ax1 = fig.add_subplot(gs[0, 0])  # Top left
     ax2 = fig.add_subplot(gs[0, 1])  # Top right
     ax3 = fig.add_subplot(gs[1, :])  # Bottom (spans both columns)
-
-    # Remove the unused subplot if it exists
-    if len(fig.axes) > 3:
-        fig.delaxes(fig.axes[3])
 
     # Plot initial utilization
     for i, cluster in enumerate(clusters):
@@ -71,6 +65,24 @@ def create_combined_utilization_plot(initial_utilization, final_utilization, all
         for j, v in enumerate(values):
             ax2.text(j + i*width, v + 1, f'{v:.1f}%', ha='center', va='bottom')
 
+    # Add VM placement annotation
+    if vm_placement is not None and vm_demand is not None:
+        vm_info = ""
+        for vm, cluster in vm_placement.items():
+            vm_info += f"VM: {vm}\nPlaced in: Cluster {cluster}\n"
+            vm_info += f"Resources:\n"
+            vm_info += f"  CPU: {vm_demand[vm]['cpu']} units\n"
+            vm_info += f"  Memory: {vm_demand[vm]['mem']} units\n"
+            vm_info += f"  Disk: {vm_demand[vm]['disk']} units\n"
+
+        props = dict(boxstyle='round', facecolor='wheat', alpha=0.5)
+        ax2.text(0.98, 0.98, vm_info,
+                transform=ax2.transAxes,
+                fontsize=9,
+                verticalalignment='top',
+                horizontalalignment='right',
+                bbox=props)
+
     # Plot utilization after VM resources allocated
     for i, cluster in enumerate(clusters):
         values = [allocated_utilization[cluster][r] * 100 for r in resources]
@@ -89,7 +101,10 @@ def create_combined_utilization_plot(initial_utilization, final_utilization, all
         for j, v in enumerate(values):
             ax3.text(j + i*width, v + 1, f'{v:.1f}%', ha='center', va='bottom')
 
+    # Adjust layout
     plt.tight_layout()
+
+    # Save the figure
     plt.savefig(output_file, dpi=300, bbox_inches='tight')
     plt.close()
 
@@ -131,20 +146,20 @@ def optimize_vm_placement(clusters, existing_placements, new_vms, current_usage,
             )
             print(f"Constraint for cluster {c}, resource {r}: {constraint}")
 
-    # Min utilization constraints
-    for r in resources:
+    # Resource capacity constraints
+        resources = ['cpu', 'mem', 'disk']
         for c in clusters:
-            total_capacity = cluster_capacity[c][r]
-            current_resource_usage = current_usage[c][r] * total_capacity
+            for r in resources:
+                current_resource_usage = current_usage[c][r] * cluster_capacity[c][r]
 
-            constraint = mdl.add_constraint(
-                (mdl.sum(vm_demand[v][r] * x[v,c] for v in new_vms) +
-                current_resource_usage) / total_capacity >= z
-            )
-            print(f"Constraint for cluster {c}, resource {r}: {constraint}")
+                # New utilization must be less than z
+                mdl.add_constraint(
+                    (mdl.sum(vm_demand[v][r] * x[v,c] for v in new_vms) +
+                    current_resource_usage) / cluster_capacity[c][r] <= z
+                )
 
-    # Objective
-    mdl.maximize(z)
+        # Objective: Minimize maximum utilization
+        mdl.minimize(z)
 
     # Solve
     solution = mdl.solve()
@@ -159,17 +174,7 @@ def optimize_vm_placement(clusters, existing_placements, new_vms, current_usage,
     # Get the optimal value (z) and explain what it means
     final_utilization = solution.get_value(z)
     print("\nOptimization Results:")
-    print(f"z = {final_utilization:.2%} (minimum utilization across all resources and clusters)")
-
-    print("\nDetailed resource utilization per cluster:")
-    for c in clusters:
-        print(f"\nCluster {c}:")
-        for r in resources:
-            # Calculate total resource usage after placement
-            current_resource_usage = current_usage[c][r] * cluster_capacity[c][r]
-            new_vm_usage = sum(vm_demand[v][r] * solution.get_value(x[v,c]) for v in new_vms)
-            total_usage = (current_resource_usage + new_vm_usage) / cluster_capacity[c][r]
-            print(f"  {r}: {total_usage:.2%} {'(minimum)' if abs(total_usage - final_utilization) < 1e-6 else ''}")
+    print(f"z = {final_utilization:.2%} (max minimum utilization across all resources and clusters)")
 
     # Extract the placement decisions
     for v in new_vms:
@@ -258,7 +263,9 @@ def main():
         cluster_utilization,
         allocated_utilization,
         clusters,
-        'combined_utilization.png'
+        'combined_utilization.png',
+        placement_plan,
+        vm_demand
     )
 
     print("\nNew VM Placement Plan:")
