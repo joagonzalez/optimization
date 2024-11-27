@@ -147,16 +147,27 @@ def optimize_vm_placement(clusters, existing_placements, new_vms, current_usage,
             print(f"Constraint for cluster {c}, resource {r}: {constraint}")
 
     # Resource capacity constraints
-        resources = ['cpu', 'mem', 'disk']
-        for c in clusters:
-            for r in resources:
-                current_resource_usage = current_usage[c][r] * cluster_capacity[c][r]
+    resources = ['cpu', 'mem', 'disk']
+    for c in clusters:
+        for r in resources:
+            current_resource_usage = current_usage[c][r] * cluster_capacity[c][r]
 
-                # New utilization must be less than z
-                mdl.add_constraint(
-                    (mdl.sum(vm_demand[v][r] * x[v,c] for v in new_vms) +
-                    current_resource_usage) / cluster_capacity[c][r] <= z
-                )
+            # New utilization must be less than z
+            mdl.add_constraint(
+                (mdl.sum(vm_demand[v][r] * x[v,c] for v in new_vms) +
+                current_resource_usage) / cluster_capacity[c][r] <= z
+            )
+
+
+    print("\nZ Constraints (Maximum Utilization):")
+    for c in clusters:
+        for r in resources:
+            current_resource_usage = current_usage[c][r] * cluster_capacity[c][r]
+            z_constraint = mdl.add_constraint(
+                (mdl.sum(vm_demand[v][r] * x[v,c] for v in new_vms) +
+                current_resource_usage) / cluster_capacity[c][r] <= z
+            )
+            print(f"Cluster {c}, Resource {r}: {z_constraint}")
 
         # Objective: Minimize maximum utilization
         mdl.minimize(z)
