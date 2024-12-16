@@ -99,5 +99,5 @@ class TestRunner:
 
 
 if __name__ == "__main__":
-    runner = TestRunner(use_visualization=False)
+    runner = TestRunner(use_visualization=True)
     runner.run_all_tests()

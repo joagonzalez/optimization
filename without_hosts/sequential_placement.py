@@ -133,34 +133,39 @@ class SequentialPlacementSimulation:
         # Create figure with 2 rows, 1 column
         fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(12, 10))
 
-        # Calculate averages for initial state
-        initial_avgs = {
-            resource: np.mean([self.config.initial_usage[cluster][resource] * 100
-                            for cluster in self.clusters])
-            for resource in resources
-        }
+        # Calculate averages and std for initial state
+        initial_avgs = {}
+        initial_stds = {}
+        for resource in resources:
+            values = [self.config.initial_usage[cluster][resource] * 100
+                    for cluster in self.clusters]
+            initial_avgs[resource] = np.mean(values)
+            initial_stds[resource] = np.std(values)
 
-        # Calculate averages for final state
-        final_avgs = {
-            resource: np.mean([self.current_usage[cluster][resource] * 100
-                            for cluster in self.clusters])
-            for resource in resources
-        }
+        # Calculate averages and std for final state
+        final_avgs = {}
+        final_stds = {}
+        for resource in resources:
+            values = [self.current_usage[cluster][resource] * 100
+                    for cluster in self.clusters]
+            final_avgs[resource] = np.mean(values)
+            final_stds[resource] = np.std(values)
 
         # Plot initial state
         for i, cluster in enumerate(self.clusters):
             values = [self.config.initial_usage[cluster][r] * 100 for r in resources]
             bars = ax1.barh(y + i*height, values, height, label=f'Cluster {cluster}')
-            # Add value labels on bars
             for idx, v in enumerate(values):
                 ax1.text(v + 1, idx + i*height, f'{v:.1f}%', va='center')
 
-        # Add average lines for initial state
+        # Add average lines and std for initial state
         for idx, resource in enumerate(resources):
             avg_value = initial_avgs[resource]
+            std_value = initial_stds[resource]
             ax1.axvline(x=avg_value, ymin=(idx/len(resources)), ymax=((idx+1)/len(resources)),
                     color='red', linestyle='--', alpha=0.5)
-            ax1.text(avg_value, idx + height, f'Avg: {avg_value:.1f}%',
+            ax1.text(avg_value, idx + height,
+                    f'Avg: {avg_value:.1f}% (σ: {std_value:.1f})',
                     va='bottom', ha='right', color='red')
 
         ax1.set_xlabel('Utilization (%)')
@@ -175,16 +180,17 @@ class SequentialPlacementSimulation:
         for i, cluster in enumerate(self.clusters):
             values = [self.current_usage[cluster][r] * 100 for r in resources]
             bars = ax2.barh(y + i*height, values, height, label=f'Cluster {cluster}')
-            # Add value labels on bars
             for idx, v in enumerate(values):
                 ax2.text(v + 1, idx + i*height, f'{v:.1f}%', va='center')
 
-        # Add average lines for final state
+        # Add average lines and std for final state
         for idx, resource in enumerate(resources):
             avg_value = final_avgs[resource]
+            std_value = final_stds[resource]
             ax2.axvline(x=avg_value, ymin=(idx/len(resources)), ymax=((idx+1)/len(resources)),
                     color='red', linestyle='--', alpha=0.5)
-            ax2.text(avg_value, idx + height, f'Avg: {avg_value:.1f}%',
+            ax2.text(avg_value, idx + height,
+                    f'Avg: {avg_value:.1f}% (σ: {std_value:.1f})',
                     va='bottom', ha='right', color='red')
 
         ax2.set_xlabel('Utilization (%)')
@@ -195,12 +201,16 @@ class SequentialPlacementSimulation:
         ax2.set_xlim(0, 100)
         ax2.grid(True, linestyle='--', alpha=0.7)
 
-        # Calculate and add average placement time
-        avg_placement_time = np.mean([m.execution_time for m in self.metrics_history])
-        stats_text = (f'Total VMs placed: {len(self.existing_placements)}\n'
-                    f'Avg placement time: {avg_placement_time:.3f}s\n'
-                    f'Initial avg utilization: {np.mean(list(initial_avgs.values())):.1f}%\n'
-                    f'Final avg utilization: {np.mean(list(final_avgs.values())):.1f}%')
+        # Calculate and add statistics
+        avg_placement_time = np.mean([m.execution_time for m in self.metrics_history]) if self.metrics_history else 0
+        stats_text = (
+            f'Total VMs placed: {len(self.existing_placements)}\n'
+            f'Avg placement time: {avg_placement_time:.3f}s\n'
+            f'Initial avg utilization: {np.mean(list(initial_avgs.values())):.1f}% '
+            f'(σ: {np.mean([initial_stds[r] for r in resources]):.1f})\n'
+            f'Final avg utilization: {np.mean(list(final_avgs.values())):.1f}% '
+            f'(σ: {np.mean([final_stds[r] for r in resources]):.1f})'
+        )
 
         # Add stats box
         props = dict(boxstyle='round', facecolor='wheat', alpha=0.5)

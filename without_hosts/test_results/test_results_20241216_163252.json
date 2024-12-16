@@ -1,0 +1,126 @@
+{
+  "balanced_clusters": {
+    "success": false,
+    "error": "No VMs were successfully placed",
+    "total_time": 0.577911376953125,
+    "vms_placed": 0,
+    "avg_placement_time": 0,
+    "min_placement_time": 0,
+    "max_placement_time": 0,
+    "final_utilization": {
+      "c1": {
+        "cpu": 0.14774568217105355,
+        "mem": 0.37099297459351793,
+        "disk": 0.5276623805742269
+      },
+      "c2": {
+        "cpu": 0.14467362778586032,
+        "mem": 0.33841931375636375,
+        "disk": 0.5404016139832086
+      },
+      "c3": {
+        "cpu": 0.15669247150441842,
+        "mem": 0.3577139497353637,
+        "disk": 0.5504716531705057
+      }
+    },
+    "cluster_distribution": {
+      "c1": 0,
+      "c2": 0,
+      "c3": 0
+    }
+  },
+  "unbalanced_initial": {
+    "success": false,
+    "error": "No VMs were successfully placed",
+    "total_time": 0.6090471744537354,
+    "vms_placed": 0,
+    "avg_placement_time": 0,
+    "min_placement_time": 0,
+    "max_placement_time": 0,
+    "final_utilization": {
+      "c1": {
+        "cpu": 0.626007448703897,
+        "mem": 0.7560855820813058,
+        "disk": 0.8259856932764851
+      },
+      "c2": {
+        "cpu": 0.31628292024684157,
+        "mem": 0.7837371529983261,
+        "disk": 0.8242298780612002
+      },
+      "c3": {
+        "cpu": 0.20401777823683132,
+        "mem": 0.42538678111230616,
+        "disk": 0.8291128196476064
+      }
+    },
+    "cluster_distribution": {
+      "c1": 0,
+      "c2": 0,
+      "c3": 0
+    }
+  },
+  "varying_capacity": {
+    "success": false,
+    "error": "No VMs were successfully placed",
+    "total_time": 0.633486270904541,
+    "vms_placed": 0,
+    "avg_placement_time": 0,
+    "min_placement_time": 0,
+    "max_placement_time": 0,
+    "final_utilization": {
+      "c1": {
+        "cpu": 0.1614651648058515,
+        "mem": 0.33011159192814565,
+        "disk": 0.47350582800605256
+      },
+      "c2": {
+        "cpu": 0.14215606409366568,
+        "mem": 0.2912236203292923,
+        "disk": 0.47361686218047827
+      },
+      "c3": {
+        "cpu": 0.20267616011446335,
+        "mem": 0.3213449219556812,
+        "disk": 0.45988083748417385
+      }
+    },
+    "cluster_distribution": {
+      "c1": 0,
+      "c2": 0,
+      "c3": 0
+    }
+  },
+  "large_vms": {
+    "success": false,
+    "error": "No VMs were successfully placed",
+    "total_time": 0.059697628021240234,
+    "vms_placed": 0,
+    "avg_placement_time": 0,
+    "min_placement_time": 0,
+    "max_placement_time": 0,
+    "final_utilization": {
+      "c1": {
+        "cpu": 0.676442234222001,
+        "mem": 0.8837639450223902,
+        "disk": 0.8641493038642072
+      },
+      "c2": {
+        "cpu": 0.4675387628013282,
+        "mem": 0.8194616138685472,
+        "disk": 0.8785786093446002
+      },
+      "c3": {
+        "cpu": 0.6137196456861767,
+        "mem": 0.9331355585016923,
+        "disk": 0.949780070671679
+      }
+    },
+    "cluster_distribution": {
+      "c1": 0,
+      "c2": 0,
+      "c3": 0
+    }
+  }
+}

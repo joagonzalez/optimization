@@ -83,30 +83,40 @@ class RealTimeVisualization:
         self.setup_plot()
         resources = ['cpu', 'mem', 'disk']
 
+        # Calculate averages and std
+        resource_stats = {}
+        for resource in resources:
+            values = [current_usage[cluster][resource] * 100
+                    for cluster in self.config.clusters]
+            resource_stats[resource] = {
+                'avg': np.mean(values),
+                'std': np.std(values)
+            }
+
         # Plot bars for each cluster
         for i, cluster in enumerate(self.config.clusters):
             values = [current_usage[cluster][r] * 100 for r in resources]
             bars = self.ax.barh(self.y_pos + i*self.height, values,
-                              self.height, label=f'Cluster {cluster}')
+                            self.height, label=f'Cluster {cluster}')
 
             for idx, v in enumerate(values):
                 self.ax.text(v + 1, idx + i*self.height, f'{v:.1f}%', va='center')
 
-        # Calculate and plot averages
+        # Add average lines with std
         for idx, resource in enumerate(resources):
-            avg_value = np.mean([current_usage[cluster][resource] * 100
-                               for cluster in self.config.clusters])
+            avg_value = resource_stats[resource]['avg']
+            std_value = resource_stats[resource]['std']
             self.ax.axvline(x=avg_value,
-                          ymin=(idx/len(resources)),
-                          ymax=((idx+1)/len(resources)),
-                          color='red', linestyle='--', alpha=0.5)
+                        ymin=(idx/len(resources)),
+                        ymax=((idx+1)/len(resources)),
+                        color='red', linestyle='--', alpha=0.5)
             self.ax.text(avg_value, idx + self.height,
-                        f'Avg: {avg_value:.1f}%',
+                        f'Avg: {avg_value:.1f}% (σ: {std_value:.1f})',
                         va='bottom', ha='right', color='red')
 
         self.ax.legend()
 
-        # Update labels
+        # Update labels with more detailed stats
         self.vm_label.config(text=f"Current VM: {vm_name}")
         self.time_label.config(text=f"Time: {execution_time:.3f}s")
         self.progress_label.config(text=f"Progress: {progress:.1f}%")
