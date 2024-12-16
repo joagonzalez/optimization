@@ -1,53 +1,103 @@
-from test_cases import generate_test_cases
-from metrics import PlacementMetrics
-from optimization import optimize_vm_placement, create_combined_utilization_plot
-import time
-import os
+# test_runner.py
 
-def run_tests():
-    test_cases = generate_test_cases()
-    results = {}
+from sequential_placement import SequentialPlacementSimulation
+from test_config import generate_test_scenarios
+import json
+from datetime import datetime
+from real_time_viz import run_visualization
 
-    for test_case in test_cases:
-        print(f"\nRunning test case: {test_case.name}")
-        print("=" * 50)
 
-        start_time = time.time()
+class TestRunner:
+    def __init__(self, use_visualization=False):  # Add parameter
+            self.scenarios = generate_test_scenarios()
+            self.results = {}
+            self.use_visualization = use_visualization  # Store preference
 
-        result = optimize_vm_placement(
-            test_case.clusters,
-            test_case.existing_placements,
-            test_case.new_vms,
-            test_case.current_usage,
-            test_case.cluster_capacity,
-            test_case.vm_demand
-        )
+    def run_all_tests(self):
+        try:
+            for i, scenario in enumerate(self.scenarios):
+                print(f"\nRunning scenario: {scenario.name}")
+                print("=" * 50)
 
-        execution_time = time.time() - start_time
+                simulation = SequentialPlacementSimulation(scenario)
 
-        metrics = PlacementMetrics()
-        if result[0] is not None:
-            placement_plan, cluster_utilization, final_utilization, final_placement = result
-            metrics.calculate_metrics(cluster_utilization, execution_time)
+                if self.use_visualization:
+                    try:
+                        run_visualization(simulation)
+                        # Check if this is the last scenario
+                        if i == len(self.scenarios) - 1:
+                            # For the last scenario, change button text
+                            print("Last scenario completed. Click 'Finish' to exit.")
+                        scenario_results = simulation.summarize_results(
+                            simulation.total_time,
+                            simulation.execution_times
+                        )
+                    except Exception as e:
+                        print(f"Visualization error: {e}")
+                        continue
+                else:
+                    scenario_results = simulation.run_simulation()
 
-            # Create visualization
-            output_dir = "test_results"
-            os.makedirs(output_dir, exist_ok=True)
-            create_combined_utilization_plot(
-                test_case.current_usage,
-                cluster_utilization,
-                cluster_utilization,  # You might want to modify this for allocated utilization
-                test_case.clusters,
-                f"{output_dir}/{test_case.name}_utilization.png",
-                placement_plan,
-                test_case.vm_demand
-            )
+                simulation.plot_results()
+                self.results[scenario.name] = scenario_results
+                self._print_scenario_results(scenario.name, scenario_results)
 
-        results[test_case.name] = metrics
-        print(f"\nResults for {test_case.name}:")
-        print(metrics)
+            self._save_results()
 
-    return results
+        finally:
+            # Ensure all tkinter windows are closed
+            try:
+                import tkinter as tk
+                root = tk.Tk()
+                root.destroy()
+            except:
+                pass
+
+    def _print_scenario_results(self, scenario_name, results):
+            print(f"\nResults for scenario: {scenario_name}")
+
+            if not results['success']:
+                print(f"Simulation failed: {results['error']}")
+                return
+
+            print(f"Total time: {results['total_time']:.2f} seconds")
+            print(f"VMs successfully placed: {results['vms_placed']}")
+            print(f"Average placement time: {results['avg_placement_time']:.3f} seconds")
+            print(f"Min placement time: {results['min_placement_time']:.3f} seconds")
+            print(f"Max placement time: {results['max_placement_time']:.3f} seconds")
+
+            print("\nFinal Resource Utilization:")
+            for cluster, usage in results['final_utilization'].items():
+                print(f"{cluster}: {', '.join(f'{r}: {v*100:.1f}%' for r, v in usage.items())}")
+
+            print("\nCluster Distribution:")
+            for cluster, vms in results['cluster_distribution'].items():
+                print(f"{cluster}: {len(vms)} VMs")
+
+    def _save_results(self):
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        results_data = {
+            scenario_name: {
+                'success': results['success'],
+                'error': results['error'],
+                'total_time': results['total_time'],
+                'vms_placed': results['vms_placed'],
+                'avg_placement_time': results['avg_placement_time'],
+                'min_placement_time': results['min_placement_time'],
+                'max_placement_time': results['max_placement_time'],
+                'final_utilization': results['final_utilization'],
+                'cluster_distribution': {
+                    cluster: len(vms)
+                    for cluster, vms in results['cluster_distribution'].items()
+                }
+            }
+            for scenario_name, results in self.results.items()
+        }
+
+        with open(f'test_results/test_results_{timestamp}.json', 'w') as f:
+            json.dump(results_data, f, indent=2)
+
 
 if __name__ == "__main__":
-    results = run_tests()
+    runner = TestRunner(use_visualization=False)
+    runner.run_all_tests()
