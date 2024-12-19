@@ -85,44 +85,46 @@ class SequentialPlacementSimulation:
             })
 
         self.total_time = time.time() - overall_start_time  # Store total time
-        return self.summarize_results(self.total_time, execution_times)
+        return self.summarize_results(self.total_time, self.execution_times)
 
     def summarize_results(self, total_time, execution_times):
-            """Summarize the simulation results with error handling"""
-            if not execution_times:  # If no VMs were placed
-                summary = {
-                    'total_time': total_time,
-                    'vms_placed': 0,
-                    'avg_placement_time': 0,
-                    'min_placement_time': 0,
-                    'max_placement_time': 0,
-                    'final_metrics': None,
-                    'cluster_distribution': {c: [] for c in self.clusters},
-                    'final_utilization': self.current_usage,
-                    'utilization_progression': self.metrics_history,
-                    'success': False,
-                    'error': "No VMs were successfully placed"
-                }
-            else:
-                summary = {
-                    'total_time': total_time,
-                    'vms_placed': len(self.existing_placements),
-                    'avg_placement_time': np.mean(execution_times),
-                    'min_placement_time': min(execution_times),
-                    'max_placement_time': max(execution_times),
-                    'final_metrics': self.metrics_history[-1] if self.metrics_history else None,
-                    'cluster_distribution': {c: [] for c in self.clusters},
-                    'final_utilization': self.current_usage,
-                    'utilization_progression': self.metrics_history,
-                    'success': True,
-                    'error': None
-                }
+        """Summarize the simulation results with error handling"""
+        if not execution_times:  # If no VMs were placed
+            summary = {
+                'total_time': total_time,
+                'vms_placed': 0,
+                'avg_placement_time': 0,
+                'min_placement_time': 0,
+                'max_placement_time': 0,
+                'final_metrics': None,
+                'cluster_distribution': {c: [] for c in self.clusters},
+                'final_utilization': self.current_usage,
+                'metrics_history': [],  # Empty metrics history
+                'success': False,
+                'error': "No VMs were successfully placed"
+            }
+        else:
+            summary = {
+                'total_time': total_time,
+                'vms_placed': len(self.existing_placements),
+                'avg_placement_time': np.mean(execution_times),
+                'min_placement_time': min(execution_times),
+                'max_placement_time': max(execution_times),
+                'cluster_distribution': {c: [] for c in self.clusters},
+                'final_utilization': self.current_usage,
+                'metrics_history': [
+                    metrics.to_dict() for metrics in self.metrics_history
+                ],
+                'final_metrics': self.metrics_history[-1].to_dict() if self.metrics_history else None,
+                'success': True,
+                'error': None
+            }
 
-                # Calculate cluster distribution
-                for vm, cluster in self.existing_placements.items():
-                    summary['cluster_distribution'][cluster].append(vm)
+            # Calculate cluster distribution
+            for vm, cluster in self.existing_placements.items():
+                summary['cluster_distribution'][cluster].append(vm)
 
-            return summary
+        return summary
 
     def plot_results(self):
         """Create visualization showing initial and final states with horizontal bars and averages"""

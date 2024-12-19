@@ -24,6 +24,40 @@ class PlacementMetrics:
         self.overall_imbalance = 0.0
         self.resource_weights = {'cpu': 0.4, 'mem': 0.4, 'disk': 0.2}  # Customizable weights
 
+    def to_dict(self):
+        """Convert metrics to dictionary format for JSON serialization"""
+        metrics_dict = {
+            'execution_time': self.execution_time,
+            'successful': self.successful,
+            'overall_imbalance': self.overall_imbalance,
+            'resources': {},
+            'overall_metrics': {
+                'avg_utilization': np.mean([
+                    self.resources[r].avg_utilization
+                    for r in self.resources
+                ]),
+                'max_utilization': max(
+                    self.resources[r].max_utilization
+                    for r in self.resources
+                ),
+                'std_dev': np.mean([
+                    self.resources[r].std_dev
+                    for r in self.resources
+                ])
+            }
+        }
+
+        for resource, metrics in self.resources.items():
+            metrics_dict['resources'][resource] = {
+                'max_utilization': metrics.max_utilization,
+                'avg_utilization': metrics.avg_utilization,
+                'std_dev': metrics.std_dev,
+                'imbalance_score': metrics.max_utilization - metrics.avg_utilization,
+                'cluster_distribution': metrics.cluster_distribution
+            }
+
+        return metrics_dict
+
     def calculate_metrics(self, cluster_utilization, execution_time):
         if not cluster_utilization:
             return

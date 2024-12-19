@@ -1,10 +1,7 @@
-# AM1-TP/optimization/without_hosts/optimization.py
-
 import time
 import numpy as np
 import matplotlib.pyplot as plt
-from docplex.mp.model import Model
-
+from models.min_max_optimizer import MinUtilizationOptimizer
 
 
 def measure_time(func):
@@ -109,113 +106,16 @@ def create_combined_utilization_plot(initial_utilization, final_utilization, all
     plt.close()
 
 @measure_time
-def optimize_vm_placement(clusters, existing_placements, new_vms, current_usage, cluster_capacity, vm_demand):
-    # Create model
-    mdl = Model('vm_cluster_placement')
-
-    # Decision variables only for new VMs
-    print("\nDecision Variables Generated:")
-    x = mdl.binary_var_dict(((v, c) for v in new_vms for c in clusters), name='x')
-    print("Binary variables x[v,c]:")
-    for v in new_vms:
-        for c in clusters:
-            print(f"x[{v},{c}] ∈ {{0,1}}")
-
-    z = mdl.continuous_var(name='z')
-    print("\nContinuous variable z:")
-    print("z ∈ ℝ")
-
-    print("\nInitial State:")
-    for vm, cluster in existing_placements.items():
-        print(f"VM {vm} is already placed in cluster {cluster}")
-
-    # Each new VM must be placed exactly once
-    for v in new_vms:
-        constraint = mdl.add_constraint(mdl.sum(x[v,c] for c in clusters) == 1)
-        print(f"Constraint for VM {v}: {constraint}")
-
-    # Resource capacity constraints
-    resources = ['cpu', 'mem', 'disk']
-    for c in clusters:
-        for r in resources:
-            # We only consider current cluster utilization and new VMs
-            current_resource_usage = current_usage[c][r] * cluster_capacity[c][r]
-            constraint = mdl.add_constraint(
-                mdl.sum(vm_demand[v][r] * x[v,c] for v in new_vms) +
-                current_resource_usage <= cluster_capacity[c][r]
-            )
-            print(f"Constraint for cluster {c}, resource {r}: {constraint}")
-
-    # Resource capacity constraints
-    resources = ['cpu', 'mem', 'disk']
-    for c in clusters:
-        for r in resources:
-            current_resource_usage = current_usage[c][r] * cluster_capacity[c][r]
-
-            # New utilization must be less than z
-            mdl.add_constraint(
-                (mdl.sum(vm_demand[v][r] * x[v,c] for v in new_vms) +
-                current_resource_usage) / cluster_capacity[c][r] <= z
-            )
-
-
-    print("\nZ Constraints (Maximum Utilization):")
-    for c in clusters:
-        for r in resources:
-            current_resource_usage = current_usage[c][r] * cluster_capacity[c][r]
-            z_constraint = mdl.add_constraint(
-                (mdl.sum(vm_demand[v][r] * x[v,c] for v in new_vms) +
-                current_resource_usage) / cluster_capacity[c][r] <= z
-            )
-            print(f"Cluster {c}, Resource {r}: {z_constraint}")
-
-        # Objective: Minimize maximum utilization
-        mdl.minimize(z)
-
-    # Solve
-    solution = mdl.solve()
-
-    if solution is None:
-        return None, None, None, None
-
-    # Create placement plan (only for new VMs)
-    placement_plan = {}
-    final_utilization = solution.get_value(z)
-
-    # Get the optimal value (z) and explain what it means
-    final_utilization = solution.get_value(z)
-    print("\nOptimization Results:")
-    print(f"z = {final_utilization:.2%} (max minimum utilization across all resources and clusters)")
-
-    # Extract the placement decisions
-    for v in new_vms:
-        for c in clusters:
-            if solution.get_value(x[v,c]) > 0.5:
-                placement_plan[v] = c
-
-    # Calculate resulting utilization for each cluster and resource
-    cluster_utilization = {c: {r: 0.0 for r in resources} for c in clusters}
-
-    # Start with current cluster usage (which includes existing VMs)
-    for c in clusters:
-        for r in resources:
-            cluster_utilization[c][r] = current_usage[c][r]
-
-    # Add only new VM placements
-    for v, c in placement_plan.items():
-        for r in resources:
-            cluster_utilization[c][r] += vm_demand[v][r] / cluster_capacity[c][r]
-
-    # Calculate final VM placement distribution
-    final_placement = {c: [] for c in clusters}
-    # Add existing VMs to final placement
-    for vm, cluster in existing_placements.items():
-        final_placement[cluster].append(vm)
-    # Add new VMs to final placement
-    for vm, cluster in placement_plan.items():
-        final_placement[cluster].append(vm)
-
-    return placement_plan, cluster_utilization, final_utilization, final_placement
+def optimize_vm_placement(clusters, existing_placements, new_vms, current_usage,
+                         cluster_capacity, vm_demand, optimizer_class=MinUtilizationOptimizer):
+    """
+    Optimize VM placement using the specified optimizer
+    """
+    optimizer = optimizer_class(
+        clusters, existing_placements, new_vms,
+        current_usage, cluster_capacity, vm_demand
+    )
+    return optimizer.optimize()
 
 @measure_time
 def main():

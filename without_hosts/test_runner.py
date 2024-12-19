@@ -1,10 +1,10 @@
 # test_runner.py
-
-from sequential_placement import SequentialPlacementSimulation
-from test_config import generate_test_scenarios
+import os
 import json
 from datetime import datetime
 from real_time_viz import run_visualization
+from test_config import generate_test_scenarios
+from sequential_placement import SequentialPlacementSimulation
 
 
 class TestRunner:
@@ -89,14 +89,20 @@ class TestRunner:
                 'cluster_distribution': {
                     cluster: len(vms)
                     for cluster, vms in results['cluster_distribution'].items()
-                }
+                },
+                # Remove the to_dict() call since metrics are already in dict format
+                'metrics_history': results['metrics_history'] if results['metrics_history'] else [],
+                'final_metrics': results['final_metrics']
             }
             for scenario_name, results in self.results.items()
         }
 
-        with open(f'test_results/test_results_{timestamp}.json', 'w') as f:
-            json.dump(results_data, f, indent=2)
+        # Create test_results directory if it doesn't exist
+        os.makedirs('test_results', exist_ok=True)
 
+        output_file = f'test_results/test_results_{timestamp}.json'
+        with open(output_file, 'w') as f:
+            json.dump(results_data, f, indent=2)
 
 if __name__ == "__main__":
     runner = TestRunner(use_visualization=True)

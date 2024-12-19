@@ -1,0 +1,162 @@
+@startuml VM Placement Optimization
+
+skinparam classAttributeIconSize 0
+
+abstract class BaseVMOptimizer {
+    # clusters: List<String>
+    # existing_placements: Dict
+    # new_vms: List<String>
+    # current_usage: Dict
+    # cluster_capacity: Dict
+    # vm_demand: Dict
+    # resources: List<String>
+    --
+    + __init__(clusters, existing_placements, new_vms, current_usage, cluster_capacity, vm_demand)
+    + optimize(): Tuple
+    # print_initial_state()
+    # print_decision_variables()
+    # print_constraints(constraint, description)
+    # print_optimization_results(final_utilization)
+    # calculate_utilization(solution, placement_plan): Dict
+    {abstract} # create_model()
+    {abstract} # add_objective()
+    {abstract} # solve()
+}
+
+class MinUtilizationOptimizer {
+    - mdl: Model
+    - x: Dict
+    - z: Variable
+    --
+    # create_model(): Model
+    # add_objective()
+    # solve(): Tuple
+}
+
+class TestRunner {
+    - scenarios: List<TestConfig>
+    - results: Dict
+    - use_visualization: boolean
+    + __init__(use_visualization: boolean)
+    + run_all_tests()
+    - _print_scenario_results(scenario_name, results)
+    - _save_results()
+}
+
+class TestConfig {
+    + name: String
+    + num_vms: int
+    + clusters: List<String>
+    + cluster_capacity: Dict
+    + initial_usage: Dict
+    + vm_demand_ranges: Dict
+    + is_last: boolean
+    --
+    + __init__(name, num_vms, clusters, cluster_capacity, initial_usage, vm_demand_ranges)
+}
+
+class SequentialPlacementSimulation {
+    - config: TestConfig
+    - clusters: List<String>
+    - cluster_capacity: Dict
+    - current_usage: Dict
+    - existing_placements: Dict
+    - placement_history: List
+    - metrics_history: List<PlacementMetrics>
+    - total_time: float
+    - execution_times: List<float>
+    --
+    + run_simulation(): Dict
+    + generate_vm_demand(): Dict
+    - update_cluster_usage(vm_name, cluster, vm_demand)
+    + plot_results()
+    - summarize_results(total_time, execution_times): Dict
+}
+
+class RealTimeVisualization {
+    - config: TestConfig
+    - is_last: boolean
+    - root: Tk
+    - fig: Figure
+    - ax: Axes
+    - canvas: FigureCanvasTkAgg
+    --
+    + __init__(config, is_last)
+    + setup_window()
+    + close_window()
+    + setup_plot()
+    + update_plot(current_usage, vm_name, execution_time, progress)
+}
+
+class PlacementMetrics {
+    + resources: Dict<ResourceMetrics>
+    + execution_time: float
+    + successful: boolean
+    + overall_imbalance: float
+    + resource_weights: Dict
+    --
+    + calculate_metrics(cluster_utilization, execution_time)
+    + get_resource_summary(): Dict
+    + to_dict(): Dict
+    - _calculate_weighted_imbalance(): float
+}
+
+class ResourceMetrics {
+    + max_utilization: float
+    + avg_utilization: float
+    + std_dev: float
+    + cluster_distribution: Dict
+    --
+    + __str__(): String
+}
+
+TestRunner o-- TestConfig : contains >
+TestRunner o-- SequentialPlacementSimulation : creates >
+TestRunner o-- RealTimeVisualization : uses >
+SequentialPlacementSimulation *-- TestConfig : configured by >
+SequentialPlacementSimulation o-- PlacementMetrics : tracks >
+SequentialPlacementSimulation o-- BaseVMOptimizer : uses >
+PlacementMetrics *-- ResourceMetrics : contains >
+RealTimeVisualization *-- TestConfig : visualizes >
+BaseVMOptimizer <|-- MinUtilizationOptimizer : extends
+
+note right of BaseVMOptimizer
+  Base optimization strategy:
+  - Defines common interface
+  - Handles basic operations
+  - Provides utility methods
+end note
+
+note right of MinUtilizationOptimizer
+  Specific optimization:
+  - Implements min-max
+    utilization strategy
+  - Uses CPLEX solver
+end note
+
+note right of RealTimeVisualization
+  Real-time visualization:
+  - Shows current placement
+  - Updates progress
+  - Displays statistics
+  - Handles user interaction
+end note
+
+note right of SequentialPlacementSimulation
+  Manages simulation:
+  - Tracks execution times
+  - Updates cluster usage
+  - Generates plots
+  - Maintains history
+end note
+
+note right of PlacementMetrics
+  Tracks metrics:
+  - Resource utilization
+  - Execution time
+  - Standard deviation
+  - Distribution stats
+  - JSON serialization
+end note
+
+@enduml
