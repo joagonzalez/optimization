@@ -1,0 +1,20 @@
+
+@startuml
+Bob -> Alice : hello
+@enduml
+[Autorefresh] [Dark mode] [Change layout] [Extract window]
+      🎉 Discover the future PlantUML Web Editor! 🚀  PNG  SVG  ASCII Art
+PlantUML diagram
+[Home]
+[What's New ?]
+[Getting Started]
+[Online Server]
+[Running]
+[F.A.Q.]
+[Download]
+[Forum]
+[Theme]
+[Preprocessing]
+[Standard Library]
+[Hitchhiker's Guide]
+[PDF Guide]
