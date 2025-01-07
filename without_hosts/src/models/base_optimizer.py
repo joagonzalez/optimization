@@ -1,14 +1,23 @@
 from abc import ABC, abstractmethod
 
+
 class BaseVMOptimizer(ABC):
-    def __init__(self, clusters, existing_placements, new_vms, current_usage, cluster_capacity, vm_demand):
+    def __init__(
+        self,
+        clusters,
+        existing_placements,
+        new_vms,
+        current_usage,
+        cluster_capacity,
+        vm_demand,
+    ):
         self.clusters = clusters
         self.existing_placements = existing_placements
         self.new_vms = new_vms
         self.current_usage = current_usage
         self.cluster_capacity = cluster_capacity
         self.vm_demand = vm_demand
-        self.resources = ['cpu', 'mem', 'disk']
+        self.resources = ["cpu", "mem", "disk"]
 
     def print_initial_state(self):
         """Print initial state information"""
@@ -18,7 +27,10 @@ class BaseVMOptimizer(ABC):
 
         print("\nCurrent Cluster State:")
         for c in self.clusters:
-            print(f"Cluster {c}:", {r: f"{v:.1%}" for r, v in self.current_usage[c].items()})
+            print(
+                f"Cluster {c}:",
+                {r: f"{v:.1%}" for r, v in self.current_usage[c].items()},
+            )
 
         print("\nVM Resource Demands:")
         for vm, demands in self.vm_demand.items():
@@ -41,7 +53,9 @@ class BaseVMOptimizer(ABC):
     def print_optimization_results(self, final_utilization):
         """Print optimization results"""
         print("\nOptimization Results:")
-        print(f"z = {final_utilization:.2%} (max minimum utilization across all resources and clusters)")
+        print(
+            f"z = {final_utilization:.2%} (max minimum utilization across all resources and clusters)"
+        )
 
     @abstractmethod
     def create_model(self):
@@ -70,7 +84,9 @@ class BaseVMOptimizer(ABC):
 
     def calculate_utilization(self, solution, placement_plan):
         """Calculate cluster utilization based on solution"""
-        cluster_utilization = {c: {r: 0.0 for r in self.resources} for c in self.clusters}
+        cluster_utilization = {
+            c: {r: 0.0 for r in self.resources} for c in self.clusters
+        }
 
         # Start with current usage
         for c in self.clusters:
@@ -80,6 +96,8 @@ class BaseVMOptimizer(ABC):
         # Add new VM placements
         for v, c in placement_plan.items():
             for r in self.resources:
-                cluster_utilization[c][r] += self.vm_demand[v][r] / self.cluster_capacity[c][r]
+                cluster_utilization[c][r] += (
+                    self.vm_demand[v][r] / self.cluster_capacity[c][r]
+                )
 
         return cluster_utilization

@@ -2,7 +2,7 @@
 
 This project implements optimization strategies for placing virtual machines (VMs) across multiple clusters while balancing resource utilization and maintaining performance constraints.
 
-![Optimization](strategies.png)
+![Optimization](without_hosts/doc/strategies.png)
 
 ## Problem Description
 

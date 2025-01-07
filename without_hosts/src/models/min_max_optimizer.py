@@ -1,45 +1,59 @@
 from docplex.mp.model import Model
-from models.base_optimizer import BaseVMOptimizer
+from src.models.base_optimizer import BaseVMOptimizer
 
 
 class MinUtilizationOptimizer(BaseVMOptimizer):
     def create_model(self):
-        self.mdl = Model('vm_cluster_placement')
+        self.mdl = Model("vm_cluster_placement")
 
         # Decision variables
         self.x = self.mdl.binary_var_dict(
-            ((v, c) for v in self.new_vms for c in self.clusters),
-            name='x'
+            ((v, c) for v in self.new_vms for c in self.clusters), name="x"
         )
-        self.z = self.mdl.continuous_var(name='z')
+        self.z = self.mdl.continuous_var(name="z")
 
         self.print_decision_variables()
 
         # Each new VM must be placed exactly once
         for v in self.new_vms:
             constraint = self.mdl.add_constraint(
-                self.mdl.sum(self.x[v,c] for c in self.clusters) == 1
+                self.mdl.sum(self.x[v, c] for c in self.clusters) == 1
             )
             self.print_constraints(constraint, f"Constraint for VM {v}")
 
         # Resource capacity constraints
         for c in self.clusters:
             for r in self.resources:
-                current_resource_usage = self.current_usage[c][r] * self.cluster_capacity[c][r]
+                current_resource_usage = (
+                    self.current_usage[c][r] * self.cluster_capacity[c][r]
+                )
 
                 # Capacity constraint
                 constraint = self.mdl.add_constraint(
-                    self.mdl.sum(self.vm_demand[v][r] * self.x[v,c] for v in self.new_vms) +
-                    current_resource_usage <= self.cluster_capacity[c][r]
+                    self.mdl.sum(
+                        self.vm_demand[v][r] * self.x[v, c] for v in self.new_vms
+                    )
+                    + current_resource_usage
+                    <= self.cluster_capacity[c][r]
                 )
-                self.print_constraints(constraint, f"Constraint for cluster {c}, resource {r}")
+                self.print_constraints(
+                    constraint, f"Constraint for cluster {c}, resource {r}"
+                )
 
                 # Utilization constraint
                 z_constraint = self.mdl.add_constraint(
-                    (self.mdl.sum(self.vm_demand[v][r] * self.x[v,c] for v in self.new_vms) +
-                    current_resource_usage) / self.cluster_capacity[c][r] <= self.z
+                    (
+                        self.mdl.sum(
+                            self.vm_demand[v][r] * self.x[v, c] for v in self.new_vms
+                        )
+                        + current_resource_usage
+                    )
+                    / self.cluster_capacity[c][r]
+                    <= self.z
                 )
-                self.print_constraints(z_constraint, f"Z Constraint - Cluster {c}, Resource {r}")
+                self.print_constraints(
+                    z_constraint, f"Z Constraint - Cluster {c}, Resource {r}"
+                )
 
         return self.mdl
 
@@ -59,7 +73,7 @@ class MinUtilizationOptimizer(BaseVMOptimizer):
 
         for v in self.new_vms:
             for c in self.clusters:
-                if solution.get_value(self.x[v,c]) > 0.5:
+                if solution.get_value(self.x[v, c]) > 0.5:
                     placement_plan[v] = c
 
         cluster_utilization = self.calculate_utilization(solution, placement_plan)
