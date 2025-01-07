@@ -23,7 +23,8 @@ def create_combined_utilization_plot(
     final_utilization,
     allocated_utilization,
     clusters,
-    output_file,
+    scenario_name,
+    output_manager,
     vm_placement=None,
     vm_demand=None,
 ):
@@ -117,8 +118,9 @@ def create_combined_utilization_plot(
     # Adjust layout
     plt.tight_layout()
 
-    # Save the figure
-    plt.savefig(output_file, dpi=300, bbox_inches="tight")
+    # Save the figure using output manager
+    output_path = output_manager.get_plot_path(f"combined_utilization_{scenario_name}.png")
+    plt.savefig(output_path, dpi=300, bbox_inches="tight")
     plt.close()
 
 

@@ -10,8 +10,9 @@ from src.services.optimization import optimize_vm_placement
 
 
 class SequentialPlacementSimulation:
-    def __init__(self, config):
+    def __init__(self, config, output_manager):
         self.config = config
+        self.output_manager = output_manager  # Add output manager
         self.clusters = config.clusters
         self.optimizer_model = config.optimizer_model
         self.cluster_capacity = config.cluster_capacity
@@ -69,15 +70,15 @@ class SequentialPlacementSimulation:
 
             placement_plan, cluster_utilization, final_utilization, final_placement = result
 
-            placed_cluster = placement_plan[vm_name]
-            self.existing_placements[vm_name] = placed_cluster
-            self.update_cluster_usage(vm_name, placed_cluster, vm_demand[vm_name])
-
+            # Calculate metrics for this placement
             metrics = PlacementMetrics()
             metrics.execution_time = execution_time
             metrics.calculate_metrics(cluster_utilization, execution_time)
             self.metrics_history.append(metrics)
-            print(metrics)
+
+            placed_cluster = placement_plan[vm_name]
+            self.existing_placements[vm_name] = placed_cluster
+            self.update_cluster_usage(vm_name, placed_cluster, vm_demand[vm_name])
 
             self.placement_history.append(
                 {
@@ -91,6 +92,11 @@ class SequentialPlacementSimulation:
             )
 
         self.total_time = time.time() - overall_start_time  # Store total time
+
+        # After simulation completes
+        if self.metrics_history:  # Only create plots if we have metrics
+            self.plot_metrics_evolution(self.config.name)
+
         return self.summarize_results(self.total_time, self.execution_times)
 
     def summarize_results(self, total_time, execution_times):
@@ -267,8 +273,157 @@ class SequentialPlacementSimulation:
         plt.tight_layout()
 
         # Save with scenario name in filename
-        plot_filename = (
-            f"test_results/sequential_placement_results_{self.config.name}.png"
+        # get_utilization_plot_path
+
+        util_path = self.output_manager.get_utilization_plot_path(
+            f'sequential_placement_results_{self.config.name}.png'
         )
-        plt.savefig(plot_filename, dpi=300, bbox_inches="tight")
+        plt.savefig(util_path, dpi=300, bbox_inches='tight')
         plt.close()
+
+    def plot_metrics_evolution(self, output_prefix):
+        """Create evolution plots for various metrics throughout VM placements."""
+        if not self.metrics_history:
+            print("No metrics history available for plotting")
+            return
+
+        # Set style parameters
+        plt.style.use('default')
+        colors = {
+            'imbalance': '#1f77b4',
+            'cpu': '#2ca02c',
+            'mem': '#ff7f0e',
+            'disk': '#d62728',
+            'max': '#7f7f7f',
+            'avg': '#17becf',
+            'std': '#bcbd22'
+        }
+
+        # Prepare data points
+        placements = range(1, len(self.metrics_history) + 1)
+
+        # Extract metrics evolution
+        imbalance_scores = [m.overall_imbalance for m in self.metrics_history]
+
+        # Resource-specific metrics
+        resource_metrics = {
+            'cpu': {'max': [], 'avg': [], 'std': []},
+            'mem': {'max': [], 'avg': [], 'std': []},
+            'disk': {'max': [], 'avg': [], 'std': []}
+        }
+
+        for metric in self.metrics_history:
+            for resource in ['cpu', 'mem', 'disk']:
+                r_metrics = metric.resources[resource]
+                resource_metrics[resource]['max'].append(r_metrics.max_utilization)
+                resource_metrics[resource]['avg'].append(r_metrics.avg_utilization)
+                resource_metrics[resource]['std'].append(r_metrics.std_dev)
+
+        # 1. Imbalance Score Evolution
+        plt.figure(figsize=(10, 6))
+        plt.plot(placements, imbalance_scores, marker='o', linestyle='-',
+                 color=colors['imbalance'], linewidth=2, markersize=6)
+        plt.title(f'Imbalance Score Evolution - {output_prefix}')
+        plt.xlabel('Number of VMs Placed')
+        plt.ylabel('Imbalance Score')
+        plt.grid(True, alpha=0.3)
+        plt.tight_layout()
+        imbalance_path = self.output_manager.get_imbalance_plot_path(f'{output_prefix}_imbalance_evolution.png')
+        plt.savefig(imbalance_path, dpi=300, bbox_inches='tight')
+        plt.close()
+
+        # 2. Resource Utilization Evolution (one plot per resource)
+        for resource in ['cpu', 'mem', 'disk']:
+            plt.figure(figsize=(12, 6))
+
+            plt.plot(placements, resource_metrics[resource]['max'],
+                    marker='o', label='Max Utilization',
+                    color=colors['max'], linewidth=2)
+            plt.plot(placements, resource_metrics[resource]['avg'],
+                    marker='s', label='Avg Utilization',
+                    color=colors['avg'], linewidth=2)
+            plt.plot(placements, resource_metrics[resource]['std'],
+                    marker='^', label='Standard Deviation',
+                    color=colors['std'], linewidth=2)
+
+            plt.title(f'{resource.upper()} Metrics Evolution - {output_prefix}')
+            plt.xlabel('Number of VMs Placed')
+            plt.ylabel('Metric Value')
+            plt.legend()
+            plt.grid(True, alpha=0.3)
+            plt.tight_layout()
+            metrics_path = self.output_manager.get_metrics_plot_path(f'{output_prefix}_{resource}_metrics_evolution.png')
+            plt.savefig(metrics_path, dpi=300, bbox_inches='tight')
+            plt.close()
+
+        # 3. Combined Resource Max Utilization
+        plt.figure(figsize=(12, 6))
+        for resource in ['cpu', 'mem', 'disk']:
+            plt.plot(placements, resource_metrics[resource]['max'],
+                    marker='o', label=f'{resource.upper()} Max',
+                    color=colors[resource], linewidth=2)
+
+        plt.title(f'Maximum Utilization Evolution by Resource - {output_prefix}')
+        plt.xlabel('Number of VMs Placed')
+        plt.ylabel('Maximum Utilization')
+        plt.legend()
+        plt.grid(True, alpha=0.3)
+        plt.tight_layout()
+        combined_path = self.output_manager.get_resource_evolution_plot_path(f'{output_prefix}_combined_max_utilization.png'
+        )
+        plt.savefig(combined_path, dpi=300, bbox_inches='tight')
+        plt.close()
+
+        # 4. Heat map of resource utilization over time
+        fig, (ax1, ax2, ax3) = plt.subplots(3, 1, figsize=(12, 15))
+
+        for ax, resource in zip([ax1, ax2, ax3], ['cpu', 'mem', 'disk']):
+            data = np.array([
+                resource_metrics[resource]['max'],
+                resource_metrics[resource]['avg'],
+                resource_metrics[resource]['std']
+            ])
+
+            im = ax.imshow(data, aspect='auto', cmap='YlOrRd')
+            ax.set_yticks(range(3))
+            ax.set_yticklabels(['Max', 'Avg', 'Std'])
+            ax.set_xlabel('Number of VMs Placed')
+            ax.set_title(f'{resource.upper()} Metrics Heatmap')
+            plt.colorbar(im, ax=ax)
+
+        plt.tight_layout()
+        heatmap_path = self.output_manager.get_heatmap_plot_path(f'{output_prefix}_metrics_heatmap.png')
+        plt.savefig(heatmap_path, dpi=300, bbox_inches='tight')
+        plt.close()
+
+        # 5. Percentage-based plots (0-100% scale)
+        for resource in ['cpu', 'mem', 'disk']:
+            plt.figure(figsize=(12, 6))
+
+            # Convert to percentages
+            max_util = [x * 100 for x in resource_metrics[resource]['max']]
+            avg_util = [x * 100 for x in resource_metrics[resource]['avg']]
+            std_util = [x * 100 for x in resource_metrics[resource]['std']]
+
+            plt.plot(placements, max_util,
+                    marker='o', label='Max Utilization',
+                    color=colors['max'], linewidth=2)
+            plt.plot(placements, avg_util,
+                    marker='s', label='Avg Utilization',
+                    color=colors['avg'], linewidth=2)
+            plt.plot(placements, std_util,
+                    marker='^', label='Standard Deviation',
+                    color=colors['std'], linewidth=2)
+
+            plt.title(f'{resource.upper()} Metrics Evolution (%) - {output_prefix}')
+            plt.xlabel('Number of VMs Placed')
+            plt.ylabel('Percentage (%)')
+            plt.legend()
+            plt.grid(True, alpha=0.3)
+            plt.ylim(0, 100)  # Set y-axis from 0 to 100%
+            plt.tight_layout()
+            util_path = self.output_manager.get_utilization_plot_path(
+                f'{output_prefix}_{resource}_metrics_evolution_percent.png'
+            )
+            plt.savefig(util_path, dpi=300, bbox_inches='tight')
+            plt.close()

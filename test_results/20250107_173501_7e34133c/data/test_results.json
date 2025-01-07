@@ -1,0 +1,1058 @@
+{
+  "unbalanced_initial_baseline": {
+    "success": true,
+    "error": null,
+    "total_time": 0.796273946762085,
+    "vms_placed": 10,
+    "avg_placement_time": 0.006284475326538086,
+    "min_placement_time": 0.005173683166503906,
+    "max_placement_time": 0.009410858154296875,
+    "final_utilization": {
+      "c1": {
+        "cpu": 0.4379137922898913,
+        "mem": 0.4157027046100476,
+        "disk": 0.34151115209210314
+      },
+      "c2": {
+        "cpu": 0.2,
+        "mem": 0.5,
+        "disk": 0.3
+      },
+      "c3": {
+        "cpu": 0.1,
+        "mem": 0.2,
+        "disk": 0.4
+      }
+    },
+    "cluster_distribution": {
+      "c1": 10,
+      "c2": 0,
+      "c3": 0
+    },
+    "metrics_history": [
+      {
+        "execution_time": 0.009410858154296875,
+        "successful": true,
+        "overall_imbalance": 0.2658872659927696,
+        "resources": {
+          "cpu": {
+            "max_utilization": 0.4014618922895971,
+            "avg_utilization": 0.23382063076319903,
+            "std_dev": 0.1253732944041424,
+            "imbalance_score": 0.16764126152639808,
+            "cluster_distribution": {
+              "c1": 0.4014618922895971,
+              "c2": 0.2,
+              "c3": 0.1
+            }
+          },
+          "mem": {
+            "max_utilization": 0.5,
+            "avg_utilization": 0.33560204584409536,
+            "std_dev": 0.12415555633056082,
+            "imbalance_score": 0.16439795415590464,
+            "cluster_distribution": {
+              "c1": 0.3068061375322862,
+              "c2": 0.5,
+              "c3": 0.2
+            }
+          },
+          "disk": {
+            "max_utilization": 0.4,
+            "avg_utilization": 0.3069741005912879,
+            "std_dev": 0.07327429772112383,
+            "imbalance_score": 0.09302589940871214,
+            "cluster_distribution": {
+              "c1": 0.22092230177386368,
+              "c2": 0.3,
+              "c3": 0.4
+            }
+          }
+        },
+        "overall_metrics": {
+          "avg_utilization": 0.2921322590661941,
+          "max_utilization": 0.5,
+          "std_dev": 0.10760104948527567
+        }
+      },
+      {
+        "execution_time": 0.008896827697753906,
+        "successful": true,
+        "overall_imbalance": 0.2631101604801133,
+        "resources": {
+          "cpu": {
+            "max_utilization": 0.4038262363132449,
+            "avg_utilization": 0.23460874543774832,
+            "std_dev": 0.12642763256411177,
+            "imbalance_score": 0.16921749087549656,
+            "cluster_distribution": {
+              "c1": 0.4038262363132449,
+              "c2": 0.2,
+              "c3": 0.1
+            }
+          },
+          "mem": {
+            "max_utilization": 0.5,
+            "avg_utilization": 0.3420567046157585,
+            "std_dev": 0.12298858436099923,
+            "imbalance_score": 0.1579432953842415,
+            "cluster_distribution": {
+              "c1": 0.32617011384727546,
+              "c2": 0.5,
+              "c3": 0.2
+            }
+          },
+          "disk": {
+            "max_utilization": 0.4,
+            "avg_utilization": 0.3087757920979993,
+            "std_dev": 0.07117258812886756,
+            "imbalance_score": 0.0912242079020007,
+            "cluster_distribution": {
+              "c1": 0.2263273762939979,
+              "c2": 0.3,
+              "c3": 0.4
+            }
+          }
+        },
+        "overall_metrics": {
+          "avg_utilization": 0.2951470807171687,
+          "max_utilization": 0.5,
+          "std_dev": 0.10686293501799286
+        }
+      },
+      {
+        "execution_time": 0.00677037239074707,
+        "successful": true,
+        "overall_imbalance": 0.2604876861513434,
+        "resources": {
+          "cpu": {
+            "max_utilization": 0.40669069923831597,
+            "avg_utilization": 0.23556356641277199,
+            "std_dev": 0.12770636030054397,
+            "imbalance_score": 0.17112713282554398,
+            "cluster_distribution": {
+              "c1": 0.40669069923831597,
+              "c2": 0.2,
+              "c3": 0.1
+            }
+          },
+          "mem": {
+            "max_utilization": 0.5,
+            "avg_utilization": 0.34659209833335974,
+            "std_dev": 0.12256927668685566,
+            "imbalance_score": 0.15340790166664026,
+            "cluster_distribution": {
+              "c1": 0.3397762950000793,
+              "c2": 0.5,
+              "c3": 0.2
+            }
+          },
+          "disk": {
+            "max_utilization": 0.4,
+            "avg_utilization": 0.31326050278748535,
+            "std_dev": 0.06607759058503428,
+            "imbalance_score": 0.08673949721251467,
+            "cluster_distribution": {
+              "c1": 0.23978150836245607,
+              "c2": 0.3,
+              "c3": 0.4
+            }
+          }
+        },
+        "overall_metrics": {
+          "avg_utilization": 0.298472055844539,
+          "max_utilization": 0.5,
+          "std_dev": 0.10545107585747797
+        }
+      },
+      {
+        "execution_time": 0.005409717559814453,
+        "successful": true,
+        "overall_imbalance": 0.2590747470707601,
+        "resources": {
+          "cpu": {
+            "max_utilization": 0.4082290407658168,
+            "avg_utilization": 0.23607634692193893,
+            "std_dev": 0.12839369791979136,
+            "imbalance_score": 0.17215269384387785,
+            "cluster_distribution": {
+              "c1": 0.4082290407658168,
+              "c2": 0.2,
+              "c3": 0.1
+            }
+          },
+          "mem": {
+            "max_utilization": 0.5,
+            "avg_utilization": 0.3507435058280663,
+            "std_dev": 0.1224790006565727,
+            "imbalance_score": 0.1492564941719337,
+            "cluster_distribution": {
+              "c1": 0.35223051748419876,
+              "c2": 0.5,
+              "c3": 0.2
+            }
+          },
+          "disk": {
+            "max_utilization": 0.4,
+            "avg_utilization": 0.314213365291837,
+            "std_dev": 0.06502332746128625,
+            "imbalance_score": 0.085786634708163,
+            "cluster_distribution": {
+              "c1": 0.24264009587551097,
+              "c2": 0.3,
+              "c3": 0.4
+            }
+          }
+        },
+        "overall_metrics": {
+          "avg_utilization": 0.30034440601394746,
+          "max_utilization": 0.5,
+          "std_dev": 0.10529867534588344
+        }
+      },
+      {
+        "execution_time": 0.005573272705078125,
+        "successful": true,
+        "overall_imbalance": 0.2584552729855937,
+        "resources": {
+          "cpu": {
+            "max_utilization": 0.4128841256597436,
+            "avg_utilization": 0.23762804188658118,
+            "std_dev": 0.1304761055382154,
+            "imbalance_score": 0.1752560837731624,
+            "cluster_distribution": {
+              "c1": 0.4128841256597436,
+              "c2": 0.2,
+              "c3": 0.1
+            }
+          },
+          "mem": {
+            "max_utilization": 0.5,
+            "avg_utilization": 0.353571850793491,
+            "std_dev": 0.12257861247453376,
+            "imbalance_score": 0.14642814920650898,
+            "cluster_distribution": {
+              "c1": 0.3607155523804731,
+              "c2": 0.5,
+              "c3": 0.2
+            }
+          },
+          "disk": {
+            "max_utilization": 0.4,
+            "avg_utilization": 0.3180729932805629,
+            "std_dev": 0.06087145622369026,
+            "imbalance_score": 0.08192700671943715,
+            "cluster_distribution": {
+              "c1": 0.2542189798416885,
+              "c2": 0.3,
+              "c3": 0.4
+            }
+          }
+        },
+        "overall_metrics": {
+          "avg_utilization": 0.3030909619868784,
+          "max_utilization": 0.5,
+          "std_dev": 0.10464205807881315
+        }
+      },
+      {
+        "execution_time": 0.005580902099609375,
+        "successful": true,
+        "overall_imbalance": 0.2554040020165146,
+        "resources": {
+          "cpu": {
+            "max_utilization": 0.41687230734871966,
+            "avg_utilization": 0.23895743578290654,
+            "std_dev": 0.13226306146769232,
+            "imbalance_score": 0.17791487156581312,
+            "cluster_distribution": {
+              "c1": 0.41687230734871966,
+              "c2": 0.2,
+              "c3": 0.1
+            }
+          },
+          "mem": {
+            "max_utilization": 0.5,
+            "avg_utilization": 0.3566969860266214,
+            "std_dev": 0.12284013694099141,
+            "imbalance_score": 0.14330301397337858,
+            "cluster_distribution": {
+              "c1": 0.37009095807986425,
+              "c2": 0.5,
+              "c3": 0.2
+            }
+          },
+          "disk": {
+            "max_utilization": 0.4,
+            "avg_utilization": 0.3274373441992992,
+            "std_dev": 0.051815186386121,
+            "imbalance_score": 0.07256265580070081,
+            "cluster_distribution": {
+              "c1": 0.2823120325978977,
+              "c2": 0.3,
+              "c3": 0.4
+            }
+          }
+        },
+        "overall_metrics": {
+          "avg_utilization": 0.30769725533627573,
+          "max_utilization": 0.5,
+          "std_dev": 0.1023061282649349
+        }
+      },
+      {
+        "execution_time": 0.005522489547729492,
+        "successful": true,
+        "overall_imbalance": 0.2562125053058058,
+        "resources": {
+          "cpu": {
+            "max_utilization": 0.4230193080782063,
+            "avg_utilization": 0.24100643602606875,
+            "std_dev": 0.13502225543591162,
+            "imbalance_score": 0.18201287205213756,
+            "cluster_distribution": {
+              "c1": 0.4230193080782063,
+              "c2": 0.2,
+              "c3": 0.1
+            }
+          },
+          "mem": {
+            "max_utilization": 0.5,
+            "avg_utilization": 0.3615926974534816,
+            "std_dev": 0.12356691008719088,
+            "imbalance_score": 0.1384073025465184,
+            "cluster_distribution": {
+              "c1": 0.38477809236044486,
+              "c2": 0.5,
+              "c3": 0.2
+            }
+          },
+          "disk": {
+            "max_utilization": 0.4,
+            "avg_utilization": 0.32815369772573605,
+            "std_dev": 0.05119754401124815,
+            "imbalance_score": 0.07184630227426397,
+            "cluster_distribution": {
+              "c1": 0.284461093177208,
+              "c2": 0.3,
+              "c3": 0.4
+            }
+          }
+        },
+        "overall_metrics": {
+          "avg_utilization": 0.3102509437350955,
+          "max_utilization": 0.5,
+          "std_dev": 0.10326223651145022
+        }
+      },
+      {
+        "execution_time": 0.005173683166503906,
+        "successful": true,
+        "overall_imbalance": 0.25351261533924185,
+        "resources": {
+          "cpu": {
+            "max_utilization": 0.42535027612249565,
+            "avg_utilization": 0.2417834253741652,
+            "std_dev": 0.13607005921030746,
+            "imbalance_score": 0.18356685074833046,
+            "cluster_distribution": {
+              "c1": 0.42535027612249565,
+              "c2": 0.2,
+              "c3": 0.1
+            }
+          },
+          "mem": {
+            "max_utilization": 0.5,
+            "avg_utilization": 0.36490152708970464,
+            "std_dev": 0.1242743377339441,
+            "imbalance_score": 0.13509847291029536,
+            "cluster_distribution": {
+              "c1": 0.3947045812691139,
+              "c2": 0.5,
+              "c3": 0.2
+            }
+          },
+          "disk": {
+            "max_utilization": 0.4,
+            "avg_utilization": 0.33589431513939116,
+            "std_dev": 0.045437950629845625,
+            "imbalance_score": 0.06410568486060886,
+            "cluster_distribution": {
+              "c1": 0.30768294541817337,
+              "c2": 0.3,
+              "c3": 0.4
+            }
+          }
+        },
+        "overall_metrics": {
+          "avg_utilization": 0.31419308920108696,
+          "max_utilization": 0.5,
+          "std_dev": 0.10192744919136572
+        }
+      },
+      {
+        "execution_time": 0.005312442779541016,
+        "successful": true,
+        "overall_imbalance": 0.2525693441879134,
+        "resources": {
+          "cpu": {
+            "max_utilization": 0.43339131189626257,
+            "avg_utilization": 0.24446377063208755,
+            "std_dev": 0.139690638880098,
+            "imbalance_score": 0.18892754126417502,
+            "cluster_distribution": {
+              "c1": 0.43339131189626257,
+              "c2": 0.2,
+              "c3": 0.1
+            }
+          },
+          "mem": {
+            "max_utilization": 0.5,
+            "avg_utilization": 0.3715091691784944,
+            "std_dev": 0.12619543857643264,
+            "imbalance_score": 0.12849083082150559,
+            "cluster_distribution": {
+              "c1": 0.4145275075354832,
+              "c2": 0.5,
+              "c3": 0.2
+            }
+          },
+          "disk": {
+            "max_utilization": 0.4,
+            "avg_utilization": 0.3451574374287379,
+            "std_dev": 0.041395259283882324,
+            "imbalance_score": 0.05484256257126213,
+            "cluster_distribution": {
+              "c1": 0.33547231228621355,
+              "c2": 0.3,
+              "c3": 0.4
+            }
+          }
+        },
+        "overall_metrics": {
+          "avg_utilization": 0.3203767924131066,
+          "max_utilization": 0.5,
+          "std_dev": 0.10242711224680433
+        }
+      },
+      {
+        "execution_time": 0.005194187164306641,
+        "successful": true,
+        "overall_imbalance": 0.25401105814556574,
+        "resources": {
+          "cpu": {
+            "max_utilization": 0.4379137922898913,
+            "avg_utilization": 0.24597126409663042,
+            "std_dev": 0.141730849610369,
+            "imbalance_score": 0.19194252819326088,
+            "cluster_distribution": {
+              "c1": 0.4379137922898913,
+              "c2": 0.2,
+              "c3": 0.1
+            }
+          },
+          "mem": {
+            "max_utilization": 0.5,
+            "avg_utilization": 0.37190090153668254,
+            "std_dev": 0.12633011903833116,
+            "imbalance_score": 0.12809909846331746,
+            "cluster_distribution": {
+              "c1": 0.4157027046100476,
+              "c2": 0.5,
+              "c3": 0.2
+            }
+          },
+          "disk": {
+            "max_utilization": 0.4,
+            "avg_utilization": 0.34717038403070105,
+            "std_dev": 0.04102048414797284,
+            "imbalance_score": 0.05282961596929897,
+            "cluster_distribution": {
+              "c1": 0.34151115209210314,
+              "c2": 0.3,
+              "c3": 0.4
+            }
+          }
+        },
+        "overall_metrics": {
+          "avg_utilization": 0.32168084988800466,
+          "max_utilization": 0.5,
+          "std_dev": 0.10302715093222432
+        }
+      }
+    ],
+    "final_metrics": {
+      "execution_time": 0.005194187164306641,
+      "successful": true,
+      "overall_imbalance": 0.25401105814556574,
+      "resources": {
+        "cpu": {
+          "max_utilization": 0.4379137922898913,
+          "avg_utilization": 0.24597126409663042,
+          "std_dev": 0.141730849610369,
+          "imbalance_score": 0.19194252819326088,
+          "cluster_distribution": {
+            "c1": 0.4379137922898913,
+            "c2": 0.2,
+            "c3": 0.1
+          }
+        },
+        "mem": {
+          "max_utilization": 0.5,
+          "avg_utilization": 0.37190090153668254,
+          "std_dev": 0.12633011903833116,
+          "imbalance_score": 0.12809909846331746,
+          "cluster_distribution": {
+            "c1": 0.4157027046100476,
+            "c2": 0.5,
+            "c3": 0.2
+          }
+        },
+        "disk": {
+          "max_utilization": 0.4,
+          "avg_utilization": 0.34717038403070105,
+          "std_dev": 0.04102048414797284,
+          "imbalance_score": 0.05282961596929897,
+          "cluster_distribution": {
+            "c1": 0.34151115209210314,
+            "c2": 0.3,
+            "c3": 0.4
+          }
+        }
+      },
+      "overall_metrics": {
+        "avg_utilization": 0.32168084988800466,
+        "max_utilization": 0.5,
+        "std_dev": 0.10302715093222432
+      }
+    }
+  },
+  "unbalanced_initial_min_max_per_cluster": {
+    "success": true,
+    "error": null,
+    "total_time": 0.7413132190704346,
+    "vms_placed": 10,
+    "avg_placement_time": 0.005491495132446289,
+    "min_placement_time": 0.005033731460571289,
+    "max_placement_time": 0.006525278091430664,
+    "final_utilization": {
+      "c1": {
+        "cpu": 0.45287772850456876,
+        "mem": 0.4157363398555874,
+        "disk": 0.33720022002250044
+      },
+      "c2": {
+        "cpu": 0.2,
+        "mem": 0.5,
+        "disk": 0.3
+      },
+      "c3": {
+        "cpu": 0.1,
+        "mem": 0.2,
+        "disk": 0.4
+      }
+    },
+    "cluster_distribution": {
+      "c1": 10,
+      "c2": 0,
+      "c3": 0
+    },
+    "metrics_history": [
+      {
+        "execution_time": 0.005033731460571289,
+        "successful": true,
+        "overall_imbalance": 0.26646288250443634,
+        "resources": {
+          "cpu": {
+            "max_utilization": 0.4029762280189236,
+            "avg_utilization": 0.2343254093396412,
+            "std_dev": 0.12604846681837412,
+            "imbalance_score": 0.1686508186792824,
+            "cluster_distribution": {
+              "c1": 0.4029762280189236,
+              "c2": 0.2,
+              "c3": 0.1
+            }
+          },
+          "mem": {
+            "max_utilization": 0.5,
+            "avg_utilization": 0.3371974398366347,
+            "std_dev": 0.12380553741038071,
+            "imbalance_score": 0.1628025601633653,
+            "cluster_distribution": {
+              "c1": 0.3115923195099042,
+              "c2": 0.5,
+              "c3": 0.2
+            }
+          },
+          "disk": {
+            "max_utilization": 0.4,
+            "avg_utilization": 0.3054153074421884,
+            "std_dev": 0.07511495382156487,
+            "imbalance_score": 0.0945846925578116,
+            "cluster_distribution": {
+              "c1": 0.2162459223265653,
+              "c2": 0.3,
+              "c3": 0.4
+            }
+          }
+        },
+        "overall_metrics": {
+          "avg_utilization": 0.2923127188728214,
+          "max_utilization": 0.5,
+          "std_dev": 0.10832298601677322
+        }
+      },
+      {
+        "execution_time": 0.005405902862548828,
+        "successful": true,
+        "overall_imbalance": 0.26414749781329133,
+        "resources": {
+          "cpu": {
+            "max_utilization": 0.4045689859263279,
+            "avg_utilization": 0.23485632864210929,
+            "std_dev": 0.12675906156130215,
+            "imbalance_score": 0.1697126572842186,
+            "cluster_distribution": {
+              "c1": 0.4045689859263279,
+              "c2": 0.2,
+              "c3": 0.1
+            }
+          },
+          "mem": {
+            "max_utilization": 0.5,
+            "avg_utilization": 0.3416483803716707,
+            "std_dev": 0.12304267186969157,
+            "imbalance_score": 0.15835161962832928,
+            "cluster_distribution": {
+              "c1": 0.32494514111501205,
+              "c2": 0.5,
+              "c3": 0.2
+            }
+          },
+          "disk": {
+            "max_utilization": 0.4,
+            "avg_utilization": 0.3075702472639844,
+            "std_dev": 0.07257571564335767,
+            "imbalance_score": 0.09242975273601561,
+            "cluster_distribution": {
+              "c1": 0.22271074179195324,
+              "c2": 0.3,
+              "c3": 0.4
+            }
+          }
+        },
+        "overall_metrics": {
+          "avg_utilization": 0.29469165209258813,
+          "max_utilization": 0.5,
+          "std_dev": 0.10745914969145047
+        }
+      },
+      {
+        "execution_time": 0.006525278091430664,
+        "successful": true,
+        "overall_imbalance": 0.26465237266625996,
+        "resources": {
+          "cpu": {
+            "max_utilization": 0.41453854459745326,
+            "avg_utilization": 0.23817951486581776,
+            "std_dev": 0.13121707339598995,
+            "imbalance_score": 0.1763590297316355,
+            "cluster_distribution": {
+              "c1": 0.41453854459745326,
+              "c2": 0.2,
+              "c3": 0.1
+            }
+          },
+          "mem": {
+            "max_utilization": 0.5,
+            "avg_utilization": 0.3454113862219272,
+            "std_dev": 0.12264628307783582,
+            "imbalance_score": 0.15458861377807281,
+            "cluster_distribution": {
+              "c1": 0.3362341586657816,
+              "c2": 0.5,
+              "c3": 0.2
+            }
+          },
+          "disk": {
+            "max_utilization": 0.4,
+            "avg_utilization": 0.3128713445482459,
+            "std_dev": 0.0665112079124775,
+            "imbalance_score": 0.08712865545175413,
+            "cluster_distribution": {
+              "c1": 0.23861403364473763,
+              "c2": 0.3,
+              "c3": 0.4
+            }
+          }
+        },
+        "overall_metrics": {
+          "avg_utilization": 0.29882074854533025,
+          "max_utilization": 0.5,
+          "std_dev": 0.10679152146210108
+        }
+      },
+      {
+        "execution_time": 0.005503177642822266,
+        "successful": true,
+        "overall_imbalance": 0.26327497069913297,
+        "resources": {
+          "cpu": {
+            "max_utilization": 0.41949742866713413,
+            "avg_utilization": 0.23983247622237805,
+            "std_dev": 0.13344067683864205,
+            "imbalance_score": 0.17966495244475608,
+            "cluster_distribution": {
+              "c1": 0.41949742866713413,
+              "c2": 0.2,
+              "c3": 0.1
+            }
+          },
+          "mem": {
+            "max_utilization": 0.5,
+            "avg_utilization": 0.34558068082948884,
+            "std_dev": 0.12263384836113435,
+            "imbalance_score": 0.15441931917051116,
+            "cluster_distribution": {
+              "c1": 0.3367420424884665,
+              "c2": 0.5,
+              "c3": 0.2
+            }
+          },
+          "disk": {
+            "max_utilization": 0.4,
+            "avg_utilization": 0.3214054509636836,
+            "std_dev": 0.057462710829261014,
+            "imbalance_score": 0.07859454903631641,
+            "cluster_distribution": {
+              "c1": 0.2642163528910509,
+              "c2": 0.3,
+              "c3": 0.4
+            }
+          }
+        },
+        "overall_metrics": {
+          "avg_utilization": 0.3022728693385168,
+          "max_utilization": 0.5,
+          "std_dev": 0.10451241200967915
+        }
+      },
+      {
+        "execution_time": 0.005387306213378906,
+        "successful": true,
+        "overall_imbalance": 0.2589631384625376,
+        "resources": {
+          "cpu": {
+            "max_utilization": 0.4206757561519353,
+            "avg_utilization": 0.24022525205064513,
+            "std_dev": 0.133969619249558,
+            "imbalance_score": 0.18045050410129018,
+            "cluster_distribution": {
+              "c1": 0.4206757561519353,
+              "c2": 0.2,
+              "c3": 0.1
+            }
+          },
+          "mem": {
+            "max_utilization": 0.5,
+            "avg_utilization": 0.3500154328436322,
+            "std_dev": 0.12247448908383053,
+            "imbalance_score": 0.14998456715636782,
+            "cluster_distribution": {
+              "c1": 0.35004629853089647,
+              "c2": 0.5,
+              "c3": 0.2
+            }
+          },
+          "disk": {
+            "max_utilization": 0.4,
+            "avg_utilization": 0.3292334663170154,
+            "std_dev": 0.0502907994476101,
+            "imbalance_score": 0.07076653368298463,
+            "cluster_distribution": {
+              "c1": 0.28770039895104604,
+              "c2": 0.3,
+              "c3": 0.4
+            }
+          }
+        },
+        "overall_metrics": {
+          "avg_utilization": 0.30649138373709756,
+          "max_utilization": 0.5,
+          "std_dev": 0.10224496926033289
+        }
+      },
+      {
+        "execution_time": 0.005491971969604492,
+        "successful": true,
+        "overall_imbalance": 0.26063902298308467,
+        "resources": {
+          "cpu": {
+            "max_utilization": 0.42782350232820915,
+            "avg_utilization": 0.24260783410940304,
+            "std_dev": 0.1371826831037216,
+            "imbalance_score": 0.1852156682188061,
+            "cluster_distribution": {
+              "c1": 0.42782350232820915,
+              "c2": 0.2,
+              "c3": 0.1
+            }
+          },
+          "mem": {
+            "max_utilization": 0.5,
+            "avg_utilization": 0.35147192026090535,
+            "std_dev": 0.12249217566240272,
+            "imbalance_score": 0.14852807973909465,
+            "cluster_distribution": {
+              "c1": 0.35441576078271614,
+              "c2": 0.5,
+              "c3": 0.2
+            }
+          },
+          "disk": {
+            "max_utilization": 0.4,
+            "avg_utilization": 0.33185893397284966,
+            "std_dev": 0.048216835440222795,
+            "imbalance_score": 0.06814106602715037,
+            "cluster_distribution": {
+              "c1": 0.29557680191854896,
+              "c2": 0.3,
+              "c3": 0.4
+            }
+          }
+        },
+        "overall_metrics": {
+          "avg_utilization": 0.3086462294477193,
+          "max_utilization": 0.5,
+          "std_dev": 0.10263056473544903
+        }
+      },
+      {
+        "execution_time": 0.005281686782836914,
+        "successful": true,
+        "overall_imbalance": 0.2599858277956666,
+        "resources": {
+          "cpu": {
+            "max_utilization": 0.4320520784325853,
+            "avg_utilization": 0.24401735947752845,
+            "std_dev": 0.139087003105683,
+            "imbalance_score": 0.18803471895505686,
+            "cluster_distribution": {
+              "c1": 0.4320520784325853,
+              "c2": 0.2,
+              "c3": 0.1
+            }
+          },
+          "mem": {
+            "max_utilization": 0.5,
+            "avg_utilization": 0.3571386594246775,
+            "std_dev": 0.1228898731253437,
+            "imbalance_score": 0.14286134057532252,
+            "cluster_distribution": {
+              "c1": 0.3714159782740325,
+              "c2": 0.5,
+              "c3": 0.2
+            }
+          },
+          "disk": {
+            "max_utilization": 0.4,
+            "avg_utilization": 0.33311343967806006,
+            "std_dev": 0.04729670713358066,
+            "imbalance_score": 0.06688656032193996,
+            "cluster_distribution": {
+              "c1": 0.29934031903418024,
+              "c2": 0.3,
+              "c3": 0.4
+            }
+          }
+        },
+        "overall_metrics": {
+          "avg_utilization": 0.31142315286008865,
+          "max_utilization": 0.5,
+          "std_dev": 0.10309119445486913
+        }
+      },
+      {
+        "execution_time": 0.0054318904876708984,
+        "successful": true,
+        "overall_imbalance": 0.25983630733821667,
+        "resources": {
+          "cpu": {
+            "max_utilization": 0.4360857986992421,
+            "avg_utilization": 0.24536193289974736,
+            "std_dev": 0.1409058663059083,
+            "imbalance_score": 0.1907238657994947,
+            "cluster_distribution": {
+              "c1": 0.4360857986992421,
+              "c2": 0.2,
+              "c3": 0.1
+            }
+          },
+          "mem": {
+            "max_utilization": 0.5,
+            "avg_utilization": 0.36174224909680935,
+            "std_dev": 0.12359514888418169,
+            "imbalance_score": 0.13825775090319065,
+            "cluster_distribution": {
+              "c1": 0.38522674729042805,
+              "c2": 0.5,
+              "c3": 0.2
+            }
+          },
+          "disk": {
+            "max_utilization": 0.4,
+            "avg_utilization": 0.3342735852315452,
+            "std_dev": 0.04648985813707773,
+            "imbalance_score": 0.06572641476845481,
+            "cluster_distribution": {
+              "c1": 0.3028207556946357,
+              "c2": 0.3,
+              "c3": 0.4
+            }
+          }
+        },
+        "overall_metrics": {
+          "avg_utilization": 0.31379258907603397,
+          "max_utilization": 0.5,
+          "std_dev": 0.10366362444238923
+        }
+      },
+      {
+        "execution_time": 0.0055315494537353516,
+        "successful": true,
+        "overall_imbalance": 0.26081568276439054,
+        "resources": {
+          "cpu": {
+            "max_utilization": 0.44486178095363,
+            "avg_utilization": 0.24828726031787665,
+            "std_dev": 0.1448704170914641,
+            "imbalance_score": 0.19657452063575334,
+            "cluster_distribution": {
+              "c1": 0.44486178095363,
+              "c2": 0.2,
+              "c3": 0.1
+            }
+          },
+          "mem": {
+            "max_utilization": 0.5,
+            "avg_utilization": 0.3677649876745559,
+            "std_dev": 0.1250247558452095,
+            "imbalance_score": 0.1322350123254441,
+            "cluster_distribution": {
+              "c1": 0.40329496302366774,
+              "c2": 0.5,
+              "c3": 0.2
+            }
+          },
+          "disk": {
+            "max_utilization": 0.4,
+            "avg_utilization": 0.33770462778394944,
+            "std_dev": 0.04437362981016009,
+            "imbalance_score": 0.06229537221605058,
+            "cluster_distribution": {
+              "c1": 0.3131138833518481,
+              "c2": 0.3,
+              "c3": 0.4
+            }
+          }
+        },
+        "overall_metrics": {
+          "avg_utilization": 0.3179189585921273,
+          "max_utilization": 0.5,
+          "std_dev": 0.10475626758227789
+        }
+      },
+      {
+        "execution_time": 0.005322456359863281,
+        "successful": true,
+        "overall_imbalance": 0.2610430729049589,
+        "resources": {
+          "cpu": {
+            "max_utilization": 0.45287772850456876,
+            "avg_utilization": 0.25095924283485627,
+            "std_dev": 0.1484998454350765,
+            "imbalance_score": 0.2019184856697125,
+            "cluster_distribution": {
+              "c1": 0.45287772850456876,
+              "c2": 0.2,
+              "c3": 0.1
+            }
+          },
+          "mem": {
+            "max_utilization": 0.5,
+            "avg_utilization": 0.37191211328519574,
+            "std_dev": 0.1263340073663719,
+            "imbalance_score": 0.12808788671480426,
+            "cluster_distribution": {
+              "c1": 0.4157363398555874,
+              "c2": 0.5,
+              "c3": 0.2
+            }
+          },
+          "disk": {
+            "max_utilization": 0.4,
+            "avg_utilization": 0.34573340667416685,
+            "std_dev": 0.04126832082703095,
+            "imbalance_score": 0.05426659332583317,
+            "cluster_distribution": {
+              "c1": 0.33720022002250044,
+              "c2": 0.3,
+              "c3": 0.4
+            }
+          }
+        },
+        "overall_metrics": {
+          "avg_utilization": 0.32286825426473964,
+          "max_utilization": 0.5,
+          "std_dev": 0.10536739120949312
+        }
+      }
+    ],
+    "final_metrics": {
+      "execution_time": 0.005322456359863281,
+      "successful": true,
+      "overall_imbalance": 0.2610430729049589,
+      "resources": {
+        "cpu": {
+          "max_utilization": 0.45287772850456876,
+          "avg_utilization": 0.25095924283485627,
+          "std_dev": 0.1484998454350765,
+          "imbalance_score": 0.2019184856697125,
+          "cluster_distribution": {
+            "c1": 0.45287772850456876,
+            "c2": 0.2,
+            "c3": 0.1
+          }
+        },
+        "mem": {
+          "max_utilization": 0.5,
+          "avg_utilization": 0.37191211328519574,
+          "std_dev": 0.1263340073663719,
+          "imbalance_score": 0.12808788671480426,
+          "cluster_distribution": {
+            "c1": 0.4157363398555874,
+            "c2": 0.5,
+            "c3": 0.2
+          }
+        },
+        "disk": {
+          "max_utilization": 0.4,
+          "avg_utilization": 0.34573340667416685,
+          "std_dev": 0.04126832082703095,
+          "imbalance_score": 0.05426659332583317,
+          "cluster_distribution": {
+            "c1": 0.33720022002250044,
+            "c2": 0.3,
+            "c3": 0.4
+          }
+        }
+      },
+      "overall_metrics": {
+        "avg_utilization": 0.32286825426473964,
+        "max_utilization": 0.5,
+        "std_dev": 0.10536739120949312
+      }
+    }
+  }
+}

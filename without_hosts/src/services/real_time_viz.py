@@ -213,8 +213,14 @@ def run_visualization(simulation):
         simulation.execution_times = execution_times
         simulation.total_time = time.time() - overall_start_time
 
+        # Generate plots before waiting for user input
+        if simulation.metrics_history:
+            print("\nGenerating metric evolution plots...")
+            simulation.plot_metrics_evolution(simulation.config.name)
+
         # Wait for user to close window
-        viz.root.mainloop()
+        if viz.root:  # Check if root window exists before calling mainloop
+            viz.root.mainloop()
 
     except tk.TclError:
         pass

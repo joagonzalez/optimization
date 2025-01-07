@@ -71,41 +71,41 @@ def generate_test_scenarios():
         )
     )
 
-    # # Scenario 3: Different cluster capacities
-    # scenarios.append(
-    #     TestConfig(
-    #         name="varying_capacity",
-    #         num_vms=100,
-    #         clusters=["c1", "c2", "c3"],
-    #         cluster_capacity={
-    #             "c1": {"cpu": 150.0, "mem": 120.0, "disk": 100.0},
-    #             "c2": {"cpu": 100.0, "mem": 100.0, "disk": 100.0},
-    #             "c3": {"cpu": 80.0, "mem": 90.0, "disk": 110.0},
-    #         },
-    #         vm_demand_ranges={"cpu": (0.01, 1), "mem": (0.05, 2), "disk": (0.1, 3)},
-    #         optimizer_model=MinUtilizationOptimizer,
-    #     )
-    # )
+    # Scenario 3: Different cluster capacities
+    scenarios.append(
+        TestConfig(
+            name="varying_capacity",
+            num_vms=100,
+            clusters=["c1", "c2", "c3"],
+            cluster_capacity={
+                "c1": {"cpu": 150.0, "mem": 120.0, "disk": 100.0},
+                "c2": {"cpu": 100.0, "mem": 100.0, "disk": 100.0},
+                "c3": {"cpu": 80.0, "mem": 90.0, "disk": 110.0},
+            },
+            vm_demand_ranges={"cpu": (0.01, 1), "mem": (0.05, 2), "disk": (0.1, 3)},
+            optimizer_model=MinUtilizationOptimizer,
+        )
+    )
 
-    # # Scenario 4: Different VM sizes
-    # scenarios.append(
-    #     TestConfig(
-    #         name="large_vms",
-    #         num_vms=50,  # Fewer VMs but larger
-    #         clusters=["c1", "c2", "c3"],
-    #         cluster_capacity={
-    #             "c1": {"cpu": 100.0, "mem": 100.0, "disk": 100.0},
-    #             "c2": {"cpu": 100.0, "mem": 100.0, "disk": 100.0},
-    #             "c3": {"cpu": 100.0, "mem": 100.0, "disk": 100.0},
-    #         },
-    #         vm_demand_ranges={
-    #             "cpu": (10.0, 30.0),
-    #             "mem": (20.0, 40.0),
-    #             "disk": (15.0, 35.0),
-    #         },
-    #         optimizer_model=MinUtilizationOptimizer,
-    #     )
-    # )
+    # Scenario 4: Different VM sizes
+    scenarios.append(
+        TestConfig(
+            name="large_vms",
+            num_vms=50,  # Fewer VMs but larger
+            clusters=["c1", "c2", "c3"],
+            cluster_capacity={
+                "c1": {"cpu": 100.0, "mem": 100.0, "disk": 100.0},
+                "c2": {"cpu": 100.0, "mem": 100.0, "disk": 100.0},
+                "c3": {"cpu": 100.0, "mem": 100.0, "disk": 100.0},
+            },
+            vm_demand_ranges={
+                "cpu": (10.0, 30.0),
+                "mem": (20.0, 40.0),
+                "disk": (15.0, 35.0),
+            },
+            optimizer_model=MinUtilizationOptimizer,
+        )
+    )
 
     # Scenario 5: Unbalanced initial with baseline optimizer
     scenarios.append(

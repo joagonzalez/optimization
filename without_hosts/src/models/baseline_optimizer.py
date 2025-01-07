@@ -72,9 +72,7 @@ class BaselineOptimizer(BaseVMOptimizer):
             total = self.cluster_capacity[cluster][resource]
             self.current_usage[cluster][resource] += demand / total
 
-    def solve(
-        self,
-    ) -> Tuple[Optional[Dict], Optional[Dict], Optional[float], Optional[Dict]]:
+    def solve(self) -> Tuple[Optional[Dict], Optional[Dict], Optional[float], Optional[Dict]]:
         """
         Implement baseline placement strategy
         Returns: (placement_plan, cluster_utilization, final_utilization, final_placement)
@@ -102,11 +100,6 @@ class BaselineOptimizer(BaseVMOptimizer):
             # Update cluster usage
             self.update_usage(vm, best_cluster)
 
-        # Calculate final utilization
-        final_utilization = max(
-            max(usage.values()) for usage in self.current_usage.values()
-        )
-
         # Get final cluster utilization
         cluster_utilization = {
             cluster: {
@@ -116,6 +109,13 @@ class BaselineOptimizer(BaseVMOptimizer):
             for cluster in self.clusters
         }
 
+        # Calculate final utilization (maximum across all resources and clusters)
+        final_utilization = max(
+            max(usage.values())
+            for usage in self.current_usage.values()
+        )
+
+        # Print results
         print("\nPlacement Summary:")
         for vm, cluster in placement_plan.items():
             print(f"VM {vm} → Cluster {cluster}")
@@ -123,5 +123,9 @@ class BaselineOptimizer(BaseVMOptimizer):
         print("\nFinal Cluster Utilization:")
         for cluster, usage in cluster_utilization.items():
             print(f"{cluster}:", {r: f"{v:.1%}" for r, v in usage.items()})
+
+        # Return early if no placements were made
+        if not placement_plan:
+            return None, None, None, None
 
         return placement_plan, cluster_utilization, final_utilization, final_placement

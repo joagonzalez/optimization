@@ -62,29 +62,33 @@ class PlacementMetrics:
         return metrics_dict
 
     def calculate_metrics(self, cluster_utilization, execution_time):
+        """Calculate all metrics based on current state"""
         if not cluster_utilization:
+            print("Warning: Empty cluster utilization data")
             return
 
         self.successful = True
         self.execution_time = execution_time
 
-        # Calculate per-resource metrics
-        for resource in self.resources.keys():
-            resource_utils = [
-                cluster[resource] for cluster in cluster_utilization.values()
-            ]
+        try:
+            # Calculate per-resource metrics
+            for resource in self.resources.keys():
+                resource_utils = [cluster[resource] for cluster in cluster_utilization.values()]
 
-            metrics = self.resources[resource]
-            metrics.max_utilization = max(resource_utils)
-            metrics.avg_utilization = np.mean(resource_utils)
-            metrics.std_dev = np.std(resource_utils)
-            metrics.cluster_distribution = {
-                cluster: utilization[resource]
-                for cluster, utilization in cluster_utilization.items()
-            }
+                metrics = self.resources[resource]
+                metrics.max_utilization = max(resource_utils)
+                metrics.avg_utilization = np.mean(resource_utils)
+                metrics.std_dev = np.std(resource_utils)
+                metrics.cluster_distribution = {
+                    cluster: utilization[resource]
+                    for cluster, utilization in cluster_utilization.items()
+                }
 
-        # Calculate overall imbalance score (weighted)
-        self.overall_imbalance = self._calculate_weighted_imbalance()
+            # Calculate overall imbalance score
+            self.overall_imbalance = self._calculate_weighted_imbalance()
+        except Exception as e:
+            print(f"Error calculating metrics: {e}")
+            self.successful = False
 
     def _calculate_weighted_imbalance(self):
         """
