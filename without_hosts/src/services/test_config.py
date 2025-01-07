@@ -1,5 +1,6 @@
 from src.models.baseline_optimizer import BaselineOptimizer  # noqa
 from src.models.min_max_optimizer import MinUtilizationOptimizer
+from src.models.min_max_per_cluster_optimizer import MinMaxPerClusterOptimizer
 
 
 class TestConfig:
@@ -124,6 +125,27 @@ def generate_test_scenarios():
             },
             vm_demand_ranges={"cpu": (0.01, 1), "mem": (0.05, 2), "disk": (0.1, 3)},
             optimizer_model=BaselineOptimizer,
+        )
+    )
+
+    # Scenario 6: Unbalanced initial with min-max per cluster optimizer
+    scenarios.append(
+        TestConfig(
+            name="unbalanced_initial_min_max_per_cluster",
+            num_vms=100,
+            clusters=["c1", "c2", "c3"],
+            cluster_capacity={
+                "c1": {"cpu": 100.0, "mem": 100.0, "disk": 100.0},
+                "c2": {"cpu": 100.0, "mem": 100.0, "disk": 100.0},
+                "c3": {"cpu": 100.0, "mem": 100.0, "disk": 100.0},
+            },
+            initial_usage={
+                "c1": {"cpu": 0.4, "mem": 0.3, "disk": 0.2},
+                "c2": {"cpu": 0.2, "mem": 0.5, "disk": 0.3},
+                "c3": {"cpu": 0.1, "mem": 0.2, "disk": 0.4},
+            },
+            vm_demand_ranges={"cpu": (0.01, 1), "mem": (0.05, 2), "disk": (0.1, 3)},
+            optimizer_model=MinMaxPerClusterOptimizer,
         )
     )
 
