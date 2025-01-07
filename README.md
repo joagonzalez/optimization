@@ -43,7 +43,7 @@ The project implements a sequential placement strategy using mixed-integer linea
    - Execution time
    - Placement success rate
 
-![Optimization Strategies](without_hosts/doc/class_diagram_with_visualization_decouple.png)
+![Optimization Strategies](without_hosts/doc/class_diagram.png)
 
 ### Extended Implementation (with hosts)
 
