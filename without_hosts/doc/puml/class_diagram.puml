@@ -1,20 +1,187 @@
+@startuml class_diagram_with_visualization_decouple
 
-@startuml
-Bob -> Alice : hello
+skinparam class {
+    BackgroundColor<<Abstract>> LightGray
+    BorderColor<<Abstract>> Black
+}
+
+package "Models" {
+    abstract class BaseVMOptimizer <<Abstract>> {
+        + clusters: List[str]
+        + existing_placements: Dict[str, str]
+        + new_vms: List[str]
+        + current_usage: Dict[str, Dict[str, float]]
+        + cluster_capacity: Dict[str, Dict[str, float]]
+        + vm_demand: Dict[str, Dict[str, float]]
+        + resources: List[str]
+        __
+        + {abstract} create_model()
+        + {abstract} add_objective()
+        + {abstract} solve()
+        + optimize()
+        + print_initial_state()
+        + print_decision_variables()
+        + print_constraints()
+        + print_optimization_results()
+        + calculate_utilization()
+    }
+
+    class MinUtilizationOptimizer {
+        + mdl: Model
+        + x: Dict
+        + z: Any
+        __
+        + create_model()
+        + add_objective()
+        + solve()
+    }
+
+    class BaselineOptimizer {
+        + get_available_resources()
+        + can_place_vm()
+        + select_best_cluster()
+        + update_usage()
+        + create_model()
+        + add_objective()
+        + solve()
+    }
+
+    class MinMaxPerClusterOptimizer {
+        + mdl: Model
+        + x: Dict
+        + z: Dict
+        __
+        + create_model()
+        + add_objective()
+        + solve()
+    }
+}
+
+package "Services" {
+    class OutputManager {
+        + base_dir: str
+        + run_id: str
+        + output_dir: str
+        __
+        + _generate_run_id()
+        + _create_output_dir()
+        + get_plot_path()
+        + get_data_path()
+        + get_metrics_plot_path()
+        + get_imbalance_plot_path()
+        + get_heatmap_plot_path()
+        + get_resource_evolution_plot_path()
+        + get_utilization_plot_path()
+        + get_comparative_plot_path()
+    }
+
+    together {
+        class SequentialPlacementSimulation #lightblue {
+            + config: TestConfig
+            + output_manager: OutputManager
+            + clusters: List[str]
+            + optimizer_model: Class
+            + cluster_capacity: Dict
+            + current_usage: Dict
+            + existing_placements: Dict
+            + placement_history: List
+            + metrics_history: List
+            + total_time: float
+            + execution_times: List[float]
+            __
+            + generate_vm_demand()
+            + update_cluster_usage()
+            + run_simulation()
+            + summarize_results()
+            + plot_results()
+            + plot_metrics_evolution()
+        }
+
+        class RealTimeVisualization #lightblue {
+            + config: TestConfig
+            + root: Tk
+            + main_frame: Frame
+            + fig: Figure
+            + ax: Axes
+            + canvas: FigureCanvasTkAgg
+            + info_frame: Frame
+            + vm_label: Label
+            + time_label: Label
+            + progress_label: Label
+            + continue_button: Button
+            __
+            + setup_window()
+            + setup_plot()
+            + update_plot()
+            + close_window()
+        }
+    }
+
+    class PlacementMetrics {
+        + resources: Dict[str, ResourceMetrics]
+        + execution_time: float
+        + successful: bool
+        + overall_imbalance: float
+        + resource_weights: Dict[str, float]
+        __
+        + calculate_metrics()
+        + to_dict()
+        + get_resource_summary()
+        + _calculate_weighted_imbalance()
+    }
+
+    class ResourceMetrics {
+        + max_utilization: float
+        + avg_utilization: float
+        + std_dev: float
+        + cluster_distribution: Dict
+    }
+
+    class TestConfig {
+        + name: str
+        + num_vms: int
+        + clusters: List[str]
+        + optimizer_model: Class
+        + cluster_capacity: Dict
+        + initial_usage: Dict
+        + vm_demand_ranges: Dict
+    }
+
+    class TestRunner {
+        + scenarios: List[TestConfig]
+        + results: Dict
+        + use_visualization: bool
+        + output_manager: OutputManager
+        __
+        + run_all_tests()
+        + _print_scenario_results()
+        + _save_results()
+        + create_comparative_plots()
+    }
+}
+
+' Hidden relationship for horizontal alignment
+SequentialPlacementSimulation -[hidden]right- RealTimeVisualization
+
+' Relationships
+BaseVMOptimizer <|-- MinUtilizationOptimizer
+BaseVMOptimizer <|-- BaselineOptimizer
+BaseVMOptimizer <|-- MinMaxPerClusterOptimizer
+
+TestRunner --> TestConfig: uses
+TestRunner --> SequentialPlacementSimulation: creates
+TestRunner --> RealTimeVisualization: creates
+TestRunner --> OutputManager: uses
+
+SequentialPlacementSimulation --> PlacementMetrics: uses
+SequentialPlacementSimulation --> TestConfig: uses
+SequentialPlacementSimulation --> BaseVMOptimizer: uses
+SequentialPlacementSimulation --> OutputManager: uses
+
+PlacementMetrics *-- ResourceMetrics
+
+RealTimeVisualization --> TestConfig: uses
+RealTimeVisualization --> PlacementMetrics: uses
+RealTimeVisualization --> SequentialPlacementSimulation: "monitors and updates >"
+
 @enduml
-[Autorefresh] [Dark mode] [Change layout] [Extract window]
-      🎉 Discover the future PlantUML Web Editor! 🚀  PNG  SVG  ASCII Art
-PlantUML diagram
-[Home]
-[What's New ?]
-[Getting Started]
-[Online Server]
-[Running]
-[F.A.Q.]
-[Download]
-[Forum]
-[Theme]
-[Preprocessing]
-[Standard Library]
-[Hitchhiker's Guide]
-[PDF Guide]
