@@ -72,15 +72,10 @@ class BaseVMOptimizer(ABC):
         """Solve the optimization model and return results"""
         pass
 
+    @abstractmethod
     def optimize(self):
         """Main optimization workflow"""
-        self.print_initial_state()
-        model = self.create_model()
-        if model is None:
-            return None, None, None, None
-
-        self.add_objective()
-        return self.solve()
+        pass
 
     def calculate_utilization(self, solution, placement_plan):
         """Calculate cluster utilization based on solution"""

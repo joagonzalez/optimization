@@ -60,6 +60,17 @@ class MinUtilizationOptimizer(BaseVMOptimizer):
     def add_objective(self):
         self.mdl.minimize(self.z)
 
+    def optimize(self):
+        """Main optimization workflow"""
+        self.print_initial_state()
+        model = self.create_model()
+        if model is None:
+            return None, None, None, None
+
+        self.add_objective()
+
+        return self.solve()
+
     def solve(self):
         solution = self.mdl.solve()
         if solution is None:

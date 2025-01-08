@@ -44,25 +44,27 @@ class SequentialPlacementSimulation:
     def run_simulation(self):
         overall_start_time = time.time()
 
-        # Changed from self.num_vms to self.config.num_vms
         for i in range(self.config.num_vms):
             vm_name = f"vm{i+1}"
             print(f"\nPlacing {vm_name} ({i+1}/{self.config.num_vms})...")
 
             vm_demand = {vm_name: self.generate_vm_demand()}
 
-            start_time = time.time()
-            result = optimize_vm_placement(
+            # Create optimizer instance
+            optimizer = self.optimizer_model(
                 self.clusters,
                 self.existing_placements,
                 [vm_name],
                 self.current_usage,
                 self.cluster_capacity,
                 vm_demand,
-                optimizer_class=self.optimizer_model,
             )
+
+            # Time the optimization
+            start_time = time.time()
+            result = optimizer.optimize()  # Use optimizer instance directly instead of optimize_vm_placement
             execution_time = time.time() - start_time
-            self.execution_times.append(execution_time)  # Store execution time
+            self.execution_times.append(execution_time) # Store execution time
 
             if result[0] is None:
                 print(f"Failed to place {vm_name}")

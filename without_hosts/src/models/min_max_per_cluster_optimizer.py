@@ -79,6 +79,17 @@ class MinMaxPerClusterOptimizer(BaseVMOptimizer):
             self.mdl.sum(self.z[c,r] for c in self.clusters for r in self.resources)
         )
 
+    def optimize(self):
+        """Main optimization workflow"""
+        self.print_initial_state()
+        model = self.create_model()
+        if model is None:
+            return None, None, None, None
+
+        self.add_objective()
+
+        return self.solve()
+
     def solve(self):
         """Solve the optimization model and return results"""
         solution = self.mdl.solve()

@@ -28,11 +28,21 @@ class BaselineOptimizerInv(BaseVMOptimizer):
         return available
 
     def can_place_vm(self, vm: str, cluster: str) -> bool:
-        """Check if VM can be placed in cluster without exceeding capacity"""
-        available = self.get_available_resources(cluster)
+        """
+        Check if VM can be placed in cluster without exceeding capacity or 100% utilization.
+        Returns False if placement would exceed either capacity or 100% utilization.
+        """
+        # Check current utilization + new VM demand won't exceed 100%
         for resource in self.resources:
-            if self.vm_demand[vm][resource] > available[resource]:
+            current_utilization = self.current_usage[cluster][resource]
+            vm_utilization = self.vm_demand[vm][resource] / self.cluster_capacity[cluster][resource]
+
+            # If placement would exceed 100% utilization
+            if current_utilization + vm_utilization > 1.0:  # 1.0 = 100%
+                print(f"Cannot place VM {vm} in cluster {cluster}: {resource} would exceed 100% "
+                    f"({(current_utilization + vm_utilization)*100:.1f}%)")
                 return False
+
         return True
 
     def select_best_cluster(self, vm: str) -> Optional[str]:
@@ -87,6 +97,11 @@ class BaselineOptimizerInv(BaseVMOptimizer):
             demand = self.vm_demand[vm][resource]
             total = self.cluster_capacity[cluster][resource]
             self.current_usage[cluster][resource] += demand / total
+
+    def optimize(self):
+        """Main optimization method"""
+        self.print_initial_state()
+        return self.solve()
 
     def solve(self) -> Tuple[Optional[Dict], Optional[Dict], Optional[float], Optional[Dict]]:
         """

@@ -163,6 +163,7 @@ def run_visualization(simulation):
                 simulation.current_usage,
                 simulation.cluster_capacity,
                 vm_demand,
+                optimizer_class=simulation.optimizer_model,
             )
             execution_time = time.time() - start_time
 
