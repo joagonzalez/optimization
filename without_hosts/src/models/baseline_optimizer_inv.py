@@ -4,7 +4,7 @@ from typing import Dict, Optional, Tuple
 from src.models.base_optimizer import BaseVMOptimizer
 
 
-class BaselineOptimizer(BaseVMOptimizer):
+class BaselineOptimizerInv(BaseVMOptimizer):
     """
     Simple baseline optimizer that places VMs in clusters with most available CPU,
     resources. Does not consider memory or disk resources.
@@ -37,9 +37,16 @@ class BaselineOptimizer(BaseVMOptimizer):
 
     def select_best_cluster(self, vm: str) -> Optional[str]:
         """
-        Select best cluster for VM placement based on current utilization,
-        prioritizing clusters with lowest CPU utilization.
+        Select best cluster for VM placement based on available resources,
+        considering CPU only. If multiple clusters have the same
+        lowest CPU utilization, randomly select one of them.
         """
+        # Get available resources for each cluster
+        cluster_resources = {
+            cluster: self.get_available_resources(cluster)
+            for cluster in self.clusters
+        }
+
         # Filter clusters that can accommodate the VM
         valid_clusters = [
             cluster for cluster in self.clusters
@@ -49,32 +56,30 @@ class BaselineOptimizer(BaseVMOptimizer):
         if not valid_clusters:
             return None
 
-        # Find cluster with lowest CPU utilization
-        # Debug print to see values
-        for c in valid_clusters:
-            print(f"Cluster {c} current CPU utilization: {self.current_usage[c]['cpu']:.2%}")
-
-        min_cpu_utilization = min(
-            self.current_usage[c]["cpu"]  # Looking at current utilization percentage
+        # Find clusters with minimum CPU utilization
+        min_cpu_usage = min(
+            cluster_resources[c]["cpu"]
             for c in valid_clusters
         )
-        print(f"Minimum CPU utilization found: {min_cpu_utilization:.2%}")
 
-        # Get all clusters with the minimum CPU utilization
-        best_clusters = [
+        # Get all clusters with the minimum CPU usage
+        min_cpu_clusters = [
             c for c in valid_clusters
-            if self.current_usage[c]["cpu"] == min_cpu_utilization
+            if cluster_resources[c]["cpu"] == min_cpu_usage
         ]
 
-        # If multiple clusters have the same utilization, randomly select one
-        if len(best_clusters) > 1:
-            selected_cluster = random.choice(best_clusters)
-            print(f"Multiple clusters with same CPU utilization {min_cpu_utilization:.2%}: {best_clusters}")
+        # If multiple clusters have the same CPU usage, randomly select one
+        if len(min_cpu_clusters) > 1:
+            selected_cluster = random.choice(min_cpu_clusters)
+
+            # Optionally log the random selection
+            print(f"Multiple clusters with same CPU usage {min_cpu_usage:.2f}: {min_cpu_clusters}")
             print(f"Randomly selected: {selected_cluster}")
+
             return selected_cluster
 
-        print(f"Selected cluster {best_clusters[0]} with CPU utilization {min_cpu_utilization:.2%}")
-        return best_clusters[0]
+        # Otherwise return the single cluster with minimum CPU usage
+        return min_cpu_clusters[0]
 
     def update_usage(self, vm: str, cluster: str):
         """Update cluster resource usage after VM placement"""
