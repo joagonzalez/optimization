@@ -429,3 +429,56 @@ class SequentialPlacementSimulation:
             )
             plt.savefig(util_path, dpi=300, bbox_inches='tight')
             plt.close()
+
+
+        # Add new plot for per-cluster utilization evolution
+        plt.figure(figsize=(12, 6))
+
+        # Extract utilization data per cluster
+        cluster_utils = {cluster: {
+            'cpu': [], 'mem': [], 'disk': []
+        } for cluster in self.clusters}
+
+        # Collect data points
+        for metric in self.metrics_history:
+            for cluster in self.clusters:
+                for resource in ['cpu', 'mem', 'disk']:
+                    cluster_utils[cluster][resource].append(
+                        metric.resources[resource].cluster_distribution[cluster] * 100
+                    )
+
+        # Plot lines for each cluster and resource
+        markers = ['o', 's', '^']  # Different markers for different resources
+        linestyles = ['-', '--', '-.', ':']  # Different line styles for different clusters
+        colors = ['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728']  # Different colors for clusters
+
+        for i, (cluster, utils) in enumerate(cluster_utils.items()):
+            for j, (resource, values) in enumerate(utils.items()):
+                plt.plot(
+                    range(1, len(values) + 1),
+                    values,
+                    label=f'{cluster} - {resource.upper()}',
+                    marker=markers[j],
+                    linestyle=linestyles[i % len(linestyles)],
+                    color=colors[i % len(colors)],
+                    linewidth=2,
+                    markersize=6,
+                    alpha=0.7
+                )
+
+        plt.title(f'Resource Utilization Evolution by Cluster - {output_prefix}')
+        plt.xlabel('Number of VMs Placed')
+        plt.ylabel('Utilization (%)')
+        plt.legend(bbox_to_anchor=(1.05, 1), loc='upper left')
+        plt.grid(True, alpha=0.3)
+        plt.ylim(0, 100)
+
+        # Adjust layout to prevent legend cutoff
+        plt.tight_layout()
+
+        # Save the new plot
+        per_cluster_path = self.output_manager.get_utilization_plot_path(
+            f'{output_prefix}_per_cluster_evolution.png'
+        )
+        plt.savefig(per_cluster_path, dpi=300, bbox_inches='tight')
+        plt.close()
