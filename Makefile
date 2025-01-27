@@ -4,47 +4,35 @@
 PYTHON = python3
 
 # Directories
-WITHOUT_HOSTS_DIR = without_hosts
-WITH_HOSTS_DIR = with_hosts
+SRC_DIR = src
 TEST_RESULTS_DIR = test_results
 
-# Main test runner files
-WITHOUT_HOSTS_TEST = $(WITHOUT_HOSTS_DIR)/test_runner.py
-WITH_HOSTS_TEST = $(WITH_HOSTS_DIR)/test_runner.py
+# Main test runner file
+TEST_RUNNER = test_runner.py
 
 # Ruff configuration
 RUFF_FLAGS = --fix --exit-non-zero-on-fix
 
 # Default target
 .PHONY: all
-all: setup test-without-hosts
+all: setup test
 
 # Create necessary directories
 .PHONY: setup
 setup:
 	@mkdir -p $(TEST_RESULTS_DIR)
 
-# Run tests without hosts
-.PHONY: test-without-hosts
-test-without-hosts: setup
-	@echo "Running tests without hosts..."
-	$(PYTHON) $(WITHOUT_HOSTS_TEST)
+# Run tests with visualization
+.PHONY: test
+test: setup
+	@echo "Running tests with visualization..."
+	$(PYTHON) $(TEST_RUNNER)
 
-# Run tests without hosts (no visualization)
-.PHONY: test-without-hosts-no-viz
-test-without-hosts-no-viz: setup
-	@echo "Running tests without hosts (no visualization)..."
-	$(PYTHON) $(WITHOUT_HOSTS_TEST) --no-viz
-
-# Run tests with hosts (when implemented)
-.PHONY: test-with-hosts
-test-with-hosts: setup
-	@echo "Running tests with hosts..."
-	$(PYTHON) $(WITH_HOSTS_TEST)
-
-# Run all tests
-.PHONY: test-all
-test-all: test-without-hosts test-with-hosts
+# Run tests without visualization
+.PHONY: test-no-viz
+test-no-viz: setup
+	@echo "Running tests without visualization..."
+	$(PYTHON) $(TEST_RUNNER) --no-viz
 
 # Clean test results
 .PHONY: clean
@@ -79,27 +67,25 @@ coverage:
 # Format and lint code with ruff
 .PHONY: format
 format:
-	ruff format $(WITHOUT_HOSTS_DIR) $(WITH_HOSTS_DIR)
-	ruff check $(WITHOUT_HOSTS_DIR) $(WITH_HOSTS_DIR) $(RUFF_FLAGS)
+	ruff format $(SRC_DIR) $(TEST_RUNNER)
+	ruff check $(SRC_DIR) $(TEST_RUNNER) $(RUFF_FLAGS)
 
 # Check code with ruff (no fixes)
 .PHONY: lint
 lint:
-	ruff check $(WITHOUT_HOSTS_DIR) $(WITH_HOSTS_DIR)
+	ruff check $(SRC_DIR) $(TEST_RUNNER)
 
 # Help target
 .PHONY: help
 help:
 	@echo "Available targets:"
-	@echo "  all                    - Setup and run tests without hosts (default)"
-	@echo "  test-without-hosts     - Run tests without hosts"
-	@echo "  test-without-hosts-no-viz - Run tests without hosts (no visualization)"
-	@echo "  test-with-hosts        - Run tests with hosts"
-	@echo "  test-all              - Run all tests"
-	@echo "  clean                 - Clean test results"
-	@echo "  clean-all             - Clean all generated files and cache"
-	@echo "  install               - Install dependencies"
-	@echo "  coverage              - Run tests and generate coverage report"
-	@echo "  format                - Format and lint code using ruff"
-	@echo "  lint                  - Check code using ruff (no fixes)"
-	@echo "  help                  - Show this help message"
+	@echo "  all                  - Setup and run tests with visualization (default)"
+	@echo "  test                - Run tests with visualization"
+	@echo "  test-no-viz         - Run tests without visualization"
+	@echo "  clean               - Clean test results"
+	@echo "  clean-all           - Clean all generated files and cache"
+	@echo "  install             - Install dependencies"
+	@echo "  coverage            - Run tests and generate coverage report"
+	@echo "  format              - Format and lint code using ruff"
+	@echo "  lint                - Check code using ruff (no fixes)"
+	@echo "  help                - Show this help message"
