@@ -23,16 +23,29 @@ setup:
 	@mkdir -p $(TEST_RESULTS_DIR)
 
 # Run tests with visualization
-.PHONY: test
-test: setup
+.PHONY: run
+run: setup
 	@echo "Running tests with visualization..."
 	$(PYTHON) $(TEST_RUNNER)
 
 # Run tests without visualization
-.PHONY: test-no-viz
-test-no-viz: setup
+.PHONY: run-no-viz
+run-no-viz: setup
 	@echo "Running tests without visualization..."
 	$(PYTHON) $(TEST_RUNNER) --no-viz
+
+# Test targets
+.PHONY: test-pytest
+test:
+	pytest src/tests/ -v
+
+.PHONY: test-coverage
+test-coverage:
+	pytest src/tests/ --cov=src --cov-report=html -v
+
+.PHONY: test-integration
+test-integration:
+	pytest src/tests/ -v -m "integration"
 
 # Clean test results
 .PHONY: clean
@@ -51,6 +64,7 @@ clean-all: clean
 	find . -type f -name ".coverage" -delete
 	find . -type d -name ".pytest_cache" -exec rm -r {} +
 	find . -type d -name ".ruff_cache" -exec rm -r {} +
+	find . -type d -name "htmlcov" -exec rm -r {} +
 
 # Install dependencies
 .PHONY: install
@@ -80,8 +94,11 @@ lint:
 help:
 	@echo "Available targets:"
 	@echo "  all                  - Setup and run tests with visualization (default)"
-	@echo "  test                - Run tests with visualization"
-	@echo "  test-no-viz         - Run tests without visualization"
+	@echo "  run                - Run tests with visualization"
+	@echo "  run-no-viz         - Run tests without visualization"
+	@echo "  test                - Run tests using pytest"
+	@echo "  test-coverage       - Run tests and generate coverage report"
+	@echo "  test-integration    - Run integration tests"
 	@echo "  clean               - Clean test results"
 	@echo "  clean-all           - Clean all generated files and cache"
 	@echo "  install             - Install dependencies"
