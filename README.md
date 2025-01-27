@@ -65,17 +65,32 @@ optimization/
 
 1. Run tests with visualization:
 ```bash
-make test-without-hosts
+make run
 ```
 
 2. Run tests without visualization:
 ```bash
-make test-without-hosts-no-viz
+make run-no-viz
 ```
 
-3. Clean test results:
+3. Clean models results:
 ```bash
 make clean
+```
+
+4. Clean app tests results and folders:
+```bash
+make clean-all
+```
+
+3. Run unit test and integration:
+```bash
+make test
+```
+
+3. Run unit test and integration with coverage report:
+```bash
+make test-coverage
 ```
 
 ## Output

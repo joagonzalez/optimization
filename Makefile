@@ -35,7 +35,7 @@ run-no-viz: setup
 	$(PYTHON) $(TEST_RUNNER) --no-viz
 
 # Test targets
-.PHONY: test-pytest
+.PHONY: test
 test:
 	pytest src/tests/ -v
 
