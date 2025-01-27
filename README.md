@@ -2,7 +2,7 @@
 
 This project implements optimization strategies for placing virtual machines (VMs) across multiple clusters while balancing resource utilization and maintaining performance constraints.
 
-![Optimization](without_hosts/doc/strategies.png)
+<img src="doc/img/strategies.png" width="800" alt="Optimization">
 
 ## Problem Description
 
@@ -13,76 +13,123 @@ Given:
 - Resource demands for each VM
 - Current resource utilization of each cluster
 
-Goals:
-1. Place new VMs across clusters efficiently
-2. Balance resource utilization across clusters
-3. Minimize resource wastage
-4. Maintain performance and capacity constraints
+## Optimization Strategies
 
-## Approach
+The project implements multiple optimization approaches:
 
-### Base Implementation (without hosts)
+1. **MinUtilizationOptimizer**: Minimizes maximum resource utilization across all clusters
+2. **MinMaxPerClusterOptimizer**: Optimizes resource balance within each cluster independently
+3. **BaselineOptimizer**: Simple strategy prioritizing clusters with lowest CPU utilization
+4. **BaselineOptimizerInv**: Variant of baseline strategy with different selection criteria
 
-The project implements a sequential placement strategy using mixed-integer linear programming (MILP):
+## Features
 
-1. **Sequential Placement**: VMs are placed one at a time, considering:
-   - Current cluster utilization
-   - Resource demands of the VM
-   - Available capacity in each cluster
-   - Impact on overall cluster balance
-
-2. **Optimization Objectives**:
-   - Minimize maximum resource utilization across clusters
-   - Balance load across different resource types (CPU, Memory, Disk)
-   - Ensure feasible placement within capacity constraints
-
-3. **Metrics Tracked**:
-   - Resource utilization per cluster
-   - Standard deviation of resource usage
-   - Imbalance scores
-   - Execution time
-   - Placement success rate
-
-![Optimization Strategies](without_hosts/doc/class_diagram.png)
-
-### Extended Implementation (with hosts)
-
-Additional complexity considering individual hosts within clusters:
-- Host-level capacity constraints
-- Cluster-level balancing
-- More granular resource management
+- Real-time visualization of placement progress
+- Comprehensive metrics tracking:
+  - Resource utilization per cluster
+  - Standard deviation of resource usage
+  - Imbalance scores
+  - Execution time
+  - Placement success rate
+- Multiple test scenarios:
+  - Balanced clusters
+  - Unbalanced initial usage
+  - Varying cluster capacities
+  - Different VM sizes
+- Extensive visualization and reporting:
+  - Resource utilization plots
+  - Comparative analysis
+  - Performance metrics evolution
+  - Heatmaps of improvements
 
 ## Project Structure
 
-- `without_hosts/`: Base implementation focusing on cluster-level optimization
-  - `models/`: Optimization strategy implementations
-  - `metrics.py`: Resource utilization and performance metrics
-  - `sequential_placement.py`: Main placement simulation logic
-
-- `with_hosts/`: Extended implementation including host-level constraints
-  - Similar structure with additional host management
+```
+optimization/
+├── src/
+│   ├── models/              # Optimization strategies
+│   │   ├── base_optimizer.py
+│   │   ├── min_max_optimizer.py
+│   │   ├── baseline_optimizer.py
+│   │   └── min_max_per_cluster_optimizer.py
+│   └── services/           # Core services
+│       ├── metrics.py      # Performance metrics
+│       ├── optimization.py # Optimization logic
+│       ├── real_time_viz.py # Visualization
+│       └── utils.py        # Utilities
+├── test_runner.py         # Main test execution
+└── Makefile              # Build and test automation
+```
 
 ## Usage
 
-The project provides:
-1. Different optimization strategies through base optimizer class
-2. Real-time visualization of placement progress
-3. Detailed metrics and analysis
-4. JSON output for result analysis
-5. Configurable test scenarios
+1. Run tests with visualization:
+```bash
+make test-without-hosts
+```
 
-## Key Features
+2. Run tests without visualization:
+```bash
+make test-without-hosts-no-viz
+```
 
-- Modular optimization strategies
-- Real-time visualization
-- Comprehensive metrics
-- Extensible architecture
-- Test scenario configuration
+3. Clean test results:
+```bash
+make clean
+```
+
+## Output
+
+The system generates comprehensive output including:
+- JSON results file with detailed metrics
+- Resource utilization plots
+- Comparative analysis visualizations
+- Performance evolution graphs
+- Resource balance heatmaps
+
+All output is organized by test run in the `test_results` directory.
+
+## Key Metrics
+
+- Resource utilization per cluster
+- Overall imbalance score
+- Standard deviation of resource usage
+- Execution time per placement
+- Success rate of placements
+- Resource balance improvements
+
+## Development
+
+To set up the development environment:
+
+1. Install dependencies:
+```bash
+make install
+```
+
+2. Format code:
+```bash
+make format
+```
+
+3. Run linting:
+```bash
+make lint
+```
 
 ## Future Improvements
 
-1. Additional optimization strategies
-2. Multi-objective optimization
-3. Dynamic resource demand handling
-4. Machine learning integration for prediction
-5. Enhanced visualization and reporting
+1. Integration of host-level constraints
+2. Dynamic resource demand handling
+3. Machine learning-based prediction
+4. Additional optimization strategies
+5. Enhanced visualization capabilities
+
+## Test Scenarios
+
+The project includes several test scenarios:
+- Balanced clusters
+- Unbalanced initial usage
+- Varying cluster capacities
+- Large VM placements
+- Different optimizer comparisons
