@@ -73,7 +73,9 @@ class PlacementMetrics:
         try:
             # Calculate per-resource metrics
             for resource in self.resources.keys():
-                resource_utils = [cluster[resource] for cluster in cluster_utilization.values()]
+                resource_utils = [
+                    cluster[resource] for cluster in cluster_utilization.values()
+                ]
 
                 metrics = self.resources[resource]
                 metrics.max_utilization = max(resource_utils)

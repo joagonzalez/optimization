@@ -2,6 +2,7 @@ import time
 
 import matplotlib.pyplot as plt
 import numpy as np
+
 from src.models.baseline_optimizer import BaselineOptimizer  # noqa
 from src.models.min_max_optimizer import MinUtilizationOptimizer
 
@@ -119,7 +120,9 @@ def create_combined_utilization_plot(
     plt.tight_layout()
 
     # Save the figure using output manager
-    output_path = output_manager.get_plot_path(f"combined_utilization_{scenario_name}.png")
+    output_path = output_manager.get_plot_path(
+        f"combined_utilization_{scenario_name}.png"
+    )
     plt.savefig(output_path, dpi=300, bbox_inches="tight")
     plt.close()
 

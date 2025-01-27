@@ -171,7 +171,6 @@ def generate_test_scenarios():
         )
     )
 
-
     scenarios[-1].is_last = True
     for scenario in scenarios[:-1]:
         scenario.is_last = False

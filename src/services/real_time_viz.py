@@ -5,8 +5,9 @@ from tkinter import ttk
 
 import matplotlib.pyplot as plt
 import numpy as np
-from src.services.metrics import PlacementMetrics
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+
+from src.services.metrics import PlacementMetrics
 from src.services.optimization import optimize_vm_placement
 
 
@@ -176,7 +177,9 @@ def run_visualization(simulation):
                 return
 
             execution_times.append(execution_time)
-            placement_plan, cluster_utilization, final_utilization, final_placement = result
+            placement_plan, cluster_utilization, final_utilization, final_placement = (
+                result
+            )
 
             # Calculate and store metrics for this placement
             metrics = PlacementMetrics()
@@ -188,14 +191,16 @@ def run_visualization(simulation):
             simulation.update_cluster_usage(vm_name, placed_cluster, vm_demand[vm_name])
 
             # Store placement history with metrics
-            simulation.placement_history.append({
-                'vm': vm_name,
-                'cluster': placed_cluster,
-                'demand': vm_demand[vm_name],
-                'utilization': cluster_utilization.copy(),
-                'execution_time': execution_time,
-                'metrics': metrics.to_dict()  # Include metrics in history
-            })
+            simulation.placement_history.append(
+                {
+                    "vm": vm_name,
+                    "cluster": placed_cluster,
+                    "demand": vm_demand[vm_name],
+                    "utilization": cluster_utilization.copy(),
+                    "execution_time": execution_time,
+                    "metrics": metrics.to_dict(),  # Include metrics in history
+                }
+            )
 
             viz.update_plot(simulation.current_usage, vm_name, execution_time, progress)
             time.sleep(0.01)

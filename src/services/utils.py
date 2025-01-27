@@ -1,6 +1,7 @@
 import os
-from datetime import datetime
 import uuid
+from datetime import datetime
+
 
 class OutputManager:
     def __init__(self):
@@ -25,12 +26,12 @@ class OutputManager:
 
         # Create subdirectories for different types of output
         plot_dirs = [
-            "utilization",     # For combined utilization plots
-            "metrics",         # For metrics evolution plots
-            "comparative",     # For comparative analysis plots
-            "heatmaps",       # For heatmap visualizations
-            "imbalance",      # For imbalance score plots
-            "resource_evolution"  # For resource-specific evolution plots
+            "utilization",  # For combined utilization plots
+            "metrics",  # For metrics evolution plots
+            "comparative",  # For comparative analysis plots
+            "heatmaps",  # For heatmap visualizations
+            "imbalance",  # For imbalance score plots
+            "resource_evolution",  # For resource-specific evolution plots
         ]
 
         for dir_name in plot_dirs:

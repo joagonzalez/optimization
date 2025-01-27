@@ -1,4 +1,5 @@
 from docplex.mp.model import Model
+
 from src.models.base_optimizer import BaseVMOptimizer
 
 

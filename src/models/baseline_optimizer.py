@@ -35,12 +35,16 @@ class BaselineOptimizer(BaseVMOptimizer):
         # Check current utilization + new VM demand won't exceed 100%
         for resource in self.resources:
             current_utilization = self.current_usage[cluster][resource]
-            vm_utilization = self.vm_demand[vm][resource] / self.cluster_capacity[cluster][resource]
+            vm_utilization = (
+                self.vm_demand[vm][resource] / self.cluster_capacity[cluster][resource]
+            )
 
             # If placement would exceed 100% utilization
             if current_utilization + vm_utilization > 1.0:  # 1.0 = 100%
-                print(f"Cannot place VM {vm} in cluster {cluster}: {resource} would exceed 100% "
-                    f"({(current_utilization + vm_utilization)*100:.1f}%)")
+                print(
+                    f"Cannot place VM {vm} in cluster {cluster}: {resource} would exceed 100% "
+                    f"({(current_utilization + vm_utilization)*100:.1f}%)"
+                )
                 return False
 
         return True
@@ -52,8 +56,7 @@ class BaselineOptimizer(BaseVMOptimizer):
         """
         # Filter clusters that can accommodate the VM
         valid_clusters = [
-            cluster for cluster in self.clusters
-            if self.can_place_vm(vm, cluster)
+            cluster for cluster in self.clusters if self.can_place_vm(vm, cluster)
         ]
 
         if not valid_clusters:
@@ -62,7 +65,9 @@ class BaselineOptimizer(BaseVMOptimizer):
         # Find cluster with lowest CPU utilization
         # Debug print to see values
         for c in valid_clusters:
-            print(f"Cluster {c} current CPU utilization: {self.current_usage[c]['cpu']:.2%}")
+            print(
+                f"Cluster {c} current CPU utilization: {self.current_usage[c]['cpu']:.2%}"
+            )
 
         min_cpu_utilization = min(
             self.current_usage[c]["cpu"]  # Looking at current utilization percentage
@@ -72,18 +77,23 @@ class BaselineOptimizer(BaseVMOptimizer):
 
         # Get all clusters with the minimum CPU utilization
         best_clusters = [
-            c for c in valid_clusters
+            c
+            for c in valid_clusters
             if self.current_usage[c]["cpu"] == min_cpu_utilization
         ]
 
         # If multiple clusters have the same utilization, randomly select one
         if len(best_clusters) > 1:
             selected_cluster = random.choice(best_clusters)
-            print(f"Multiple clusters with same CPU utilization {min_cpu_utilization:.2%}: {best_clusters}")
+            print(
+                f"Multiple clusters with same CPU utilization {min_cpu_utilization:.2%}: {best_clusters}"
+            )
             print(f"Randomly selected: {selected_cluster}")
             return selected_cluster
 
-        print(f"Selected cluster {best_clusters[0]} with CPU utilization {min_cpu_utilization:.2%}")
+        print(
+            f"Selected cluster {best_clusters[0]} with CPU utilization {min_cpu_utilization:.2%}"
+        )
         return best_clusters[0]
 
     def update_usage(self, vm: str, cluster: str):
@@ -98,7 +108,9 @@ class BaselineOptimizer(BaseVMOptimizer):
         self.print_initial_state()
         return self.solve()
 
-    def solve(self) -> Tuple[Optional[Dict], Optional[Dict], Optional[float], Optional[Dict]]:
+    def solve(
+        self,
+    ) -> Tuple[Optional[Dict], Optional[Dict], Optional[float], Optional[Dict]]:
         """
         Implement baseline placement strategy
         Returns: (placement_plan, cluster_utilization, final_utilization, final_placement)
@@ -137,8 +149,7 @@ class BaselineOptimizer(BaseVMOptimizer):
 
         # Calculate final utilization (maximum across all resources and clusters)
         final_utilization = max(
-            max(usage.values())
-            for usage in self.current_usage.values()
+            max(usage.values()) for usage in self.current_usage.values()
         )
 
         # Print results
